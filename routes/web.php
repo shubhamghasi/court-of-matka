@@ -1,12 +1,14 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
+Route::middleware('guest')->group(function () {
+    Route::get('login', [AuthController::class, 'index'])->name('login');
+    Route::post('login', [AuthController::class, 'store'])->name('login.store');
+    Route::post('attemptLogin', [AuthController::class, 'attemptLogin'])->name('attemptLogin');
+    Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 });
-Route::view('version-2', 'version2');
-Route::view('version-3', 'version3');
-Route::view('version-4', 'version4');
-Route::view('version-5', 'version5');
-Route::view('version-6', 'version6');
+Route::middleware('auth')->group(function () {
+    Route::view('/', 'index')->name('home');
+});
