@@ -13,6 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer=""></script>
     <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}">
     <link rel="preload" href="/assets/img/loader.gif" as="image">
+    @stack('styles')
 </head>
 
 <body class="min-h-screen">
@@ -26,6 +27,7 @@
     <script src="{{ asset('assets/dist/jquery.validate.min.js') }}"></script>
     <script src="{{ asset('assets/dist/blockui.js') }}"></script>
     <script src="{{ asset('assets/js/common.js') }}"></script>
+    @stack('scripts')
 </body>
 
 </html>

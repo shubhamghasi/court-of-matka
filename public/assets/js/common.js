@@ -1,3 +1,5 @@
+let csrf_token = $('meta[name="csrf-token"]').attr("content");
+
 function showToast(type, message) {
     const icons = {
         success: `<svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`,
@@ -49,10 +51,144 @@ function showToast(type, message) {
     }, 4000);
 }
 
+$(document).ready(function () {
+    $("#refundForm").on("submit", function (e) {
+        e.preventDefault();
+
+        let marketId = $("#refund-market").val();
+        let betNumber = $("#betted_number").val();
+        let amount = $("#amount-played").val();
+
+        if (!marketId || !betNumber || !amount) {
+            alert("Please fill in all required fields.");
+            return;
+        }
+
+        const csrf_token = $('meta[name="csrf-token"]').attr("content");
+
+        const formData = {
+            _token: csrf_token,
+            market_id: marketId,
+            bet_number: betNumber,
+            amount: amount,
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/refunds/store",
+            data: formData,
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                $("#refundSuccess").removeClass("hidden");
+                $("#whatsappInstruction").removeClass("hidden"); // 👈 show WhatsApp div
+                $("#refundForm")[0].reset();
+            },
+            error: function (xhr) {
+                console.error(xhr.responseText);
+                alert("An error occurred. Please try again.");
+            },
+        });
+    });
+
+    $("#dismissSuccess").on("click", function () {
+        $("#refundSuccess").addClass("hidden");
+    });
+});
+
+$("#dismissSuccess").on("click", function () {
+    $("#refundSuccess").addClass("hidden");
+});
+
+$("#trendsForm").on("submit", function (e) {
+    e.preventDefault();
+
+    const form = $(this);
+    const transactionId = $("#trend_check").val().trim();
+    const market = $("#trends-market").val();
+    const number_type = $("#number_type").val();
+    url = "/prediction";
+
+    // Reset previous messages
+    $("#errorMessage").hide();
+    $("#successMessage").hide();
+
+    // Basic validation
+    if (!transactionId || transactionId.length < 8) {
+        $("#errorText").text("Please enter a valid Transaction ID.");
+        $("#errorMessage").fadeIn();
+        return;
+    }
+
+    if (!market) {
+        $("#errorText").text("Please select a market.");
+        $("#errorMessage").fadeIn();
+        return;
+    }
+    if (!number_type) {
+        $("#errorText").text("Please select Number Type.");
+        $("#errorMessage").fadeIn();
+        return;
+    }
+
+    const formData = {
+        market_id: market,
+        transaction_id: transactionId,
+        number_type: number_type,
+        _token: csrf_token,
+    };
+    console.log(formData);
+    // return;
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: formData,
+        dataType: "json",
+        beforeSend: function () {
+            // Optional: show loader or disable button
+        },
+        success: function (response) {
+            $("#successMessage").fadeIn();
+            $("#errorMessage").hide();
+            form.trigger("reset");
+        },
+        error: function (xhr) {
+            let message =
+                "There was an error submitting your request. Please try again.";
+
+            if (
+                xhr.status === 422 &&
+                xhr.responseJSON &&
+                xhr.responseJSON.errors
+            ) {
+                const errors = xhr.responseJSON.errors;
+                message = Object.values(errors)
+                    .map((e) => e[0])
+                    .join(" ");
+            } else if (xhr.responseJSON?.message) {
+                message = xhr.responseJSON.message;
+            }
+
+            $("#errorText").text(message);
+            $("#errorMessage").fadeIn();
+        },
+    });
+});
+
+$(document).ready(function () {
+    $("#copyUPI").on("click", function () {
+        const upi = $("#trends-upi").val();
+        navigator.clipboard.writeText(upi).then(() => {
+            alert("UPI ID copied to clipboard!");
+        });
+    });
+});
+
 // override these in your code to change the default behavior and style
 $.blockUI.defaults = {
     // message displayed when blocking (use null for no message)
-    message: '<div class="custom-blockui-loader"><img src="/assets/img/loader.gif"></div>',
+    message:
+        '<div class="custom-blockui-loader"><img src="/assets/img/loader.gif"></div>',
 
     title: null, // title string; only used when theme == true
     draggable: true, // only used when theme == true (requires jquery-ui.js to be loaded)

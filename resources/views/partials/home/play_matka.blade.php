@@ -13,52 +13,45 @@
                             d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
-                <h2 class="text-2xl font-bold text-gray-800">🎮 Play Matka (All Markets)</h2>
+                <h2 class="text-2xl font-bold text-gray-800">Play Matka</h2>
             </div>
 
-            <form @submit.prevent="submitPlayForm" class="space-y-6">
+            <form id="play_matka_form" class="space-y-6">
+                @method('post')
+                @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="market" class="block text-sm font-medium text-gray-700 mb-1">Select
-                            Market</label>
-                        <select id="market" x-model="playForm.market"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                            fdprocessedid="qizdb">
-                            <option value="" disabled="" selected="">Choose a market</option>
-                            <option value="kalyan">Kalyan</option>
-                            <option value="milan">Milan Day</option>
-                            <option value="rajdhani">Rajdhani Night</option>
-                            <option value="main">Main Bazar</option>
-                            <option value="starline">Starline</option>
+                        <label for="market" class="block text-sm font-medium text-gray-700 mb-1">Select Market</label>
+                        <select id="market" name="market_id"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="" disabled selected>Choose a market</option>
+                            @foreach ($marketsCollection as $market)
+                                <option value="{{ $market->id }}">{{ $market->name }}</option>
+                            @endforeach
                         </select>
                     </div>
 
                     <div>
-                        <label for="number" class="block text-sm font-medium text-gray-700 mb-1">Enter
-                            Number</label>
-                        <input type="text" id="number" x-model="playForm.number"
+                        <label for="number" class="block text-sm font-medium text-gray-700 mb-1">Enter Number</label>
+                        <input type="text" id="number" name="bet_number"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                            placeholder="Enter your number" fdprocessedid="d6jwd7">
+                            placeholder="Enter your number">
                     </div>
 
                     <div>
-                        <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Enter
-                            Price</label>
-                        <input type="number" id="price" x-model="playForm.price"
+                        <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Enter Price</label>
+                        <input type="number" id="price" name="bet_amount"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                            placeholder="Enter amount" fdprocessedid="igyckqb">
+                            placeholder="Enter amount">
                     </div>
 
                     <div>
-                        <label for="upi" class="block text-sm font-medium text-gray-700 mb-1">UPI
-                            ID</label>
+                        <label for="upi" class="block text-sm font-medium text-gray-700 mb-1">UPI ID</label>
                         <div class="flex">
-                            <input type="text" id="upi" readonly="" value="courtofmatka@upi"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50"
-                                fdprocessedid="y8zl67">
-                            <button type="button" @click="copyUPI('courtofmatka@upi')"
-                                class="bg-indigo-600 text-white px-4 py-2 rounded-r-lg hover:bg-indigo-700 transition"
-                                fdprocessedid="1ajo9go">
+                            <input type="text" id="upi" readonly value="{{ $admin_upi_id ?? 'test@upi' }}"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50">
+                            <button type="button" onclick="copyUPI()"
+                                class="bg-indigo-600 text-white px-4 py-2 rounded-r-lg hover:bg-indigo-700 transition">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -72,16 +65,15 @@
                     <div>
                         <label for="transaction" class="block text-sm font-medium text-gray-700 mb-1">Transaction
                             ID</label>
-                        <input type="text" id="transaction" x-model="playForm.transactionId"
+                        <input type="text" id="transaction" name="transaction_id"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                            placeholder="Enter transaction ID" fdprocessedid="zqjlzq">
+                            placeholder="Enter transaction ID">
                     </div>
                 </div>
 
                 <div class="flex justify-end">
                     <button type="submit"
-                        class="gradient-bg text-white px-6 py-3 rounded-lg hover:opacity-90 transition flex items-center"
-                        fdprocessedid="1aukbe">
+                        class="gradient-bg text-white px-6 py-3 rounded-lg hover:opacity-90 transition flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -93,15 +85,14 @@
             </form>
 
             <!-- Success Message -->
-            <div x-show="playSuccess" x-transition=""
+            <div id="successMessage" style="display: none;"
                 class="mt-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded relative"
                 role="alert">
                 <strong class="font-bold">Success!</strong>
                 <span class="block sm:inline"> Your bet has been placed successfully.</span>
-                <button @click="playSuccess = false" class="absolute top-0 bottom-0 right-0 px-4 py-3"
-                    fdprocessedid="kw8ra">
-                    <svg class="fill-current h-6 w-6 text-green-500" role="button"
-                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <button onclick="hideSuccessMessage()" class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                    <svg class="fill-current h-6 w-6 text-green-500" role="button" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20">
                         <path
                             d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z">
                         </path>
@@ -111,3 +102,45 @@
         </div>
     </div>
 </section>
+
+@push('scripts')
+    <script>
+        // Copy UPI
+        function copyUPI() {
+            const upiInput = document.getElementById('upi');
+            navigator.clipboard.writeText(upiInput.value).then(() => {
+                alert('UPI ID copied!');
+            });
+        }
+
+        // Hide success alert
+        function hideSuccessMessage() {
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        $(document).on('submit', '#play_matka_form', function(e) {
+            e.preventDefault();
+
+            let form = $(this);
+            let formData = form.serialize();
+
+            $.ajax({
+                url: '{{ route('handleMatkaBet') }}',
+                method: 'POST',
+                data: formData,
+                success: function(response) {
+                    if (response.success) {
+                        form[0].reset();
+                        $('#successMessage').show();
+                    } else {
+                        alert(response.message || 'Failed to submit bet.');
+                    }
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                    alert('Server error. Please try again.');
+                }
+            });
+        });
+    </script>
+@endpush
