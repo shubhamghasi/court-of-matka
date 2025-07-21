@@ -3,10 +3,12 @@
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\MarketController;
 use App\Http\Controllers\Admin\RefundController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MatkaBetsController;
 use App\Http\Controllers\PredictionController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TypeController;
 use Illuminate\Support\Facades\Route;
 
@@ -48,4 +50,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         ->name('admin.trends.generate-number');
     Route::post('trends/send-number/{id}', [PredictionController::class, 'sendNumberToUser'])
         ->name('admin.trends.send-number');
+    Route::match(['get', 'post'], 'users', [UserController::class, 'index'])->name('admin.user');
+    Route::get('settings', [SettingsController::class, 'edit'])->name('admin.settings.edit');
+    Route::post('settings', [SettingsController::class, 'update'])->name('admin.settings.update');
 });
