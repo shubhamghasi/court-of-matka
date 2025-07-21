@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Market;
 use App\Models\NumberType;
+use App\Models\Option;
 use App\Models\Trend;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,8 +16,10 @@ class HomeController extends Controller
     {
         //
         $marketsCollection = Market::where('status', 1)->get();
-        $userPredictionsCollection = Trend::where('user_id',Auth::user()->id)->get();
+        $userPredictionsCollection = Trend::where('user_id', Auth::user()->id)->get();
         $numberTypes = NumberType::get();
-        return view('index', compact('marketsCollection', 'userPredictionsCollection', 'numberTypes'));
+        $options = Option::pluck('option_value', 'option_name')->toArray();
+
+        return view('index', compact('marketsCollection', 'userPredictionsCollection', 'numberTypes', 'options'));
     }
 }

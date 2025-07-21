@@ -64,7 +64,6 @@ $(document).ready(function () {
             return;
         }
 
-        const csrf_token = $('meta[name="csrf-token"]').attr("content");
 
         const formData = {
             _token: csrf_token,

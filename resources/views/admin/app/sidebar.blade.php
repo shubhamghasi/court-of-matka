@@ -44,11 +44,11 @@
                 </a>
                 <ul id="users_nav" class="collapse show dropdown-nav">
                     <li>
-                        <a href="{{ route('admin.market.index') }}" class="active"> Users List </a>
+                        <a href="{{ route('admin.user') }}" class="active"> Users List </a>
                     </li>
-                    <li>
-                        <a href="{{ route('admin.market.create') }}" class="active">Add User</a>
-                    </li>
+                    {{-- <li>
+                        <a href="{{ route('admin.user.create') }}" class="active">Add User</a>
+                    </li> --}}
                 </ul>
             </li>
             <li class="nav-item nav-item-has-children">
@@ -106,6 +106,23 @@
                 <ul id="number-type" class="collapse show dropdown-nav">
                     <li>
                         <a href="{{ route('admin.number.type') }}" class="active"> All Types </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.number.type.add') }}"> Add Type </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item nav-item-has-children">
+                <a href="#0" data-bs-toggle="collapse" data-bs-target="#number-type" aria-controls="number-type"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="icon">
+                        <span class="mdi mdi-format-list-bulleted-type"></span>
+                    </span>
+                    <span class="text">Settings</span>
+                </a>
+                <ul id="number-type" class="collapse show dropdown-nav">
+                    <li>
+                        <a href="{{ route('admin.settings.edit') }}" class="active"> Edit </a>
                     </li>
                     <li>
                         <a href="{{ route('admin.number.type.add') }}"> Add Type </a>
