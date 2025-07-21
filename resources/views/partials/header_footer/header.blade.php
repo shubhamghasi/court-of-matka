@@ -18,11 +18,21 @@
                 </svg>
             </button>
             <ul class="hidden md:flex space-x-6">
-                <li><a href="#intro" class="hover:text-indigo-200 transition">Home</a></li>
-                <li><a href="#play" class="hover:text-indigo-200 transition">Play</a></li>
-                <li><a href="#refund" class="hover:text-indigo-200 transition">Refund</a></li>
-                <li><a href="#trends" class="hover:text-indigo-200 transition">Trends</a></li>
-                <li><a href="#doubt" class="hover:text-indigo-200 transition">Prediction</a></li>
+                @if (Auth::user())
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit"
+                                class="text-purple-100 hover:text-white font-medium transition duration-200">
+                                Logout
+                            </button>
+
+                        </form>
+                    </li>
+                @else
+                    <li><a href="#intro" class="hover:text-indigo-200 transition">Login</a></li>
+                    <li><a href="{{ route('') }}" class="hover:text-indigo-200 transition">Signup</a></li>
+                @endif
             </ul>
         </nav>
     </div>

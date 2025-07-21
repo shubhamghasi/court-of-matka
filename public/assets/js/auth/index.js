@@ -168,23 +168,3 @@ function validateOtpForm() {
     });
 }
 
-function showOtpValidationForm() {
-    $("#signup_form_container form").remove();
-
-    $("#signup_form_container h2#createaccount")
-        .text("Verify Your Email")
-        .addClass("text-center text-xl");
-
-    $("#signup_form_container").append(`
-            <form id="otp_verification_form" class="space-y-4 mt-6" method="post">
-                <label for="otp" class="block text-sm font-medium text-gray-700 mb-1">Enter the 6-digit code sent to your email</label>
-                <input type="text" name="otp" id="otp" maxlength="6"
-                    class="form-input w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none text-center tracking-widest text-xl"
-                    placeholder="••••••" required pattern="\\d{6}">
-                <button type="submit"
-                    class="btn-primary w-full py-2 px-4 rounded-md text-white font-medium">
-                    Verify OTP
-                </button>
-            </form>
-        `);
-}

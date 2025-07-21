@@ -10,20 +10,22 @@ use App\Http\Controllers\PredictionController;
 use App\Http\Controllers\TypeController;
 use Illuminate\Support\Facades\Route;
 
+Route::match(['get', 'post'], '/verify-otp', [AuthController::class, 'verifyOtp'])->name('validate-otp');
+Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->name('resend-otp');
 Route::middleware('guest')->group(function () {
     Route::get('login', [AuthController::class, 'index'])->name('login');
     Route::post('login', [AuthController::class, 'store'])->name('login.store');
     Route::post('attemptLogin', [AuthController::class, 'attemptLogin'])->name('attemptLogin');
-    Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
     Route::prefix('admin')->group(function () {
         Route::match(['get', 'post'], 'login', [LoginController::class, 'index'])->name('admin.login');
     });
 });
-Route::middleware(['auth', 'role:user'])->group(function () {
+Route::middleware(['auth', 'validated_email'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::post('send-matka-bet', [MatkaBetsController::class, 'handleMatkaBet'])->name('handleMatkaBet');
     Route::match(['get', 'post'], 'prediction', [PredictionController::class, 'index'])->name('predict.store');
     Route::post('refunds/store', [RefundController::class, 'store'])->name('refund.store');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 
