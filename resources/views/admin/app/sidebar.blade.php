@@ -105,10 +105,10 @@
                 </a>
                 <ul id="number-type" class="collapse show dropdown-nav">
                     <li>
-                        <a href="{{ route('admin.number.type') }}" class="active"> All Types </a>
+                        <a href="{{ route('admin.number.type.index') }}" class="active"> All Types </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.number.type.add') }}"> Add Type </a>
+                        <a href="{{ route('admin.number.type.create') }}"> Add Type </a>
                     </li>
                 </ul>
             </li>
@@ -116,16 +116,13 @@
                 <a href="#0" data-bs-toggle="collapse" data-bs-target="#number-type" aria-controls="number-type"
                     aria-expanded="false" aria-label="Toggle navigation">
                     <span class="icon">
-                        <span class="mdi mdi-format-list-bulleted-type"></span>
+                        <span class="mdi mdi-cogs"></span>
                     </span>
                     <span class="text">Settings</span>
                 </a>
                 <ul id="number-type" class="collapse show dropdown-nav">
                     <li>
                         <a href="{{ route('admin.settings.edit') }}" class="active"> Edit </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.number.type.add') }}"> Add Type </a>
                     </li>
                 </ul>
             </li>

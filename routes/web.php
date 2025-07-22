@@ -44,8 +44,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         Route::post('{id}/status', [RefundController::class, 'updateStatus'])->name('update-status');
     });
     Route::get('trends', [PredictionController::class, 'index'])->name('admin.trends');
-    Route::get('number-types', [TypeController::class, 'index'])->name('admin.number.type');
-    Route::match(['get', 'post'], 'number-types/add', [TypeController::class, 'store'])->name('admin.number.type.add');
+    Route::resource('number-types', TypeController::class)->names('admin.number.type');
     Route::post('trends/{id}/generate-number', [PredictionController::class, 'updatePredictedNumber'])
         ->name('admin.trends.generate-number');
     Route::post('trends/send-number/{id}', [PredictionController::class, 'sendNumberToUser'])
