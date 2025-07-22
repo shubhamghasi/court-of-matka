@@ -3,7 +3,7 @@
     <form action="{{ route('admin.market.store') }}" method="post">
         @csrf
         <div class="m-3 card-style mb-30">
-            <h6 class="mb-25">Input Fields</h6>
+            <h6 class="mb-25">Market Name</h6>
             <div class="input-style-1">
                 <input type="text" placeholder="Market Name" name="name">
             </div>

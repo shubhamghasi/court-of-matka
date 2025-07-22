@@ -49,10 +49,10 @@
                         @foreach ($refundsCollection as $refund)
                             <tr>
                                 <td>
-                                    <p class="text-sm">{{ $refund->user->id }}</p>
+                                    <p class="text-sm">{{ $refund->user?->id }}</p>
                                 </td>
                                 <td>
-                                    <p class="text-sm">{{ $refund->user->name }}</p>
+                                    <p class="text-sm">{{ $refund->user?->name }}</p>
                                 </td>
                                 <td>
                                     <p class="text-sm">{{ $refund->bet_number }}</p>

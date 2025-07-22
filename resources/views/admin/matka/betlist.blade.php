@@ -19,6 +19,9 @@
                                 <h6 class="text-sm text-medium">Market Name</h6>
                             </th>
                             <th>
+                                <h6 class="text-sm text-medium">Number Type</h6>
+                            </th>
+                            <th>
                                 <h6 class="text-sm text-medium">Bet Number</h6>
                             </th>
                             <th>
@@ -43,10 +46,13 @@
                         @foreach ($matBetsCollection as $bet)
                             <tr>
                                 <td>
-                                    <p class="text-sm">{{ $bet->user->name }}</p>
+                                    <p class="text-sm">{{ $bet->user?->name }}</p>
                                 </td>
                                 <td>
                                     <p class="text-sm">{{ $bet->market->name }}</p>
+                                </td>
+                                <td>
+                                    <p class="text-sm">{{ ucfirst($bet->number_type?->name) }}</p>
                                 </td>
                                 <td>
                                     <p class="text-sm">{{ $bet->bet_number }}</p>

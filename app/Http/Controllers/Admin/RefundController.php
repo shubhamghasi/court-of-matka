@@ -13,6 +13,7 @@ class RefundController extends Controller
     public function index()
     {
         $refundsCollection = Refund::with('user', 'predicted')->whereNull('deleted_at')->paginate(20);
+        // dd($refundsCollection);
         return view('admin.refund.index', compact('refundsCollection'));
     }
 

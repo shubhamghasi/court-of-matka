@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\MarketController;
+use App\Http\Controllers\Admin\NumberAmountController;
 use App\Http\Controllers\Admin\RefundController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\MatkaBetsController;
 use App\Http\Controllers\PredictionController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TypeController;
+use App\Models\NumberAmount;
 use Illuminate\Support\Facades\Route;
 
 Route::match(['get', 'post'], '/verify-otp', [AuthController::class, 'verifyOtp'])->name('validate-otp');
@@ -45,6 +47,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     });
     Route::get('trends', [PredictionController::class, 'index'])->name('admin.trends');
     Route::resource('number-types', TypeController::class)->names('admin.number.type');
+    Route::resource('manage-numbers', NumberAmountController::class)->names('admin.manage.number');
     Route::post('trends/{id}/generate-number', [PredictionController::class, 'updatePredictedNumber'])
         ->name('admin.trends.generate-number');
     Route::post('trends/send-number/{id}', [PredictionController::class, 'sendNumberToUser'])

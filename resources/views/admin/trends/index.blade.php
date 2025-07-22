@@ -54,10 +54,10 @@
                         @foreach ($trendsRequestCollection as $trendRequest)
                             <tr>
                                 <td>
-                                    <p class="text-sm">{{ $trendRequest->user->id }}</p>
+                                    <p class="text-sm">{{ $trendRequest->user?->id }}</p>
                                 </td>
                                 <td>
-                                    <p class="text-sm">{{ $trendRequest->user->name }}</p>
+                                    <p class="text-sm">{{ $trendRequest->user?->name }}</p>
                                 </td>
                                 <td>
                                     <p class="text-sm">{{ $trendRequest->market->name }}</p>
@@ -66,7 +66,7 @@
                                     <p class="text-sm">{{ $trendRequest->transaction_id }}</p>
                                 </td>
                                 <td>
-                                    <p class="text-sm">{{ ucfirst($trendRequest->type->name) }}</p>
+                                    <p class="text-sm">{{ ucfirst($trendRequest->type?->name) }}</p>
                                 </td>
                                 <td>
                                     <p class="text-sm">{{ $trendRequest?->predicted_numbers }}</p>
@@ -100,7 +100,7 @@
                                                     method="POST">
                                                     @csrf
                                                     <input type="hidden" name="type"
-                                                        value="{{ $trendRequest->type->name }}">
+                                                        value="{{ $trendRequest->type?->name }}">
                                                     <input type="hidden" name="is_random" value="true">
                                                     <button type="submit" class="text-gray btn">Generate Random</button>
                                                 </form>
@@ -113,7 +113,7 @@
                                                     method="POST">
                                                     @csrf
                                                     <input type="hidden" name="type"
-                                                        value="{{ $trendRequest->type->name }}">
+                                                        value="{{ $trendRequest->type?->name }}">
                                                     <input type="hidden" name="is_random" value="false">
                                                     <button type="submit" class="text-gray btn">Generate Data</button>
                                                 </form>

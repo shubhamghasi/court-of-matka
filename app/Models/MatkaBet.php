@@ -26,4 +26,8 @@ class MatkaBet extends Model
     {
         return $this->belongsTo(Market::class);
     }
+
+    public function number_type(){
+        return $this->belongsTo(NumberType::class);
+    }
 }
