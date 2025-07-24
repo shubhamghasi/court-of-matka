@@ -36,7 +36,7 @@ class PredictionController extends Controller
             ]);
         }
 
-        $trendsRequestCollection = Trend::with('type')->paginate(20);
+        $trendsRequestCollection = Trend::with('type')->latest()->paginate(20);
         return view('admin.trends.index', compact('trendsRequestCollection'));
     }
 

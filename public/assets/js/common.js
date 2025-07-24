@@ -74,6 +74,7 @@ $(document).ready(function () {
             dataType: "json",
             success: function (response) {
                 console.log(response);
+                $("#refundSuccess").text(response.message);
                 $("#refundSuccess").removeClass("hidden");
                 $("#whatsappInstruction").removeClass("hidden"); // 👈 show WhatsApp div
                 $("#refundForm")[0].reset();

@@ -14,24 +14,38 @@ class RefundController extends Controller
     public function index()
     {
         $refundsCollection = Refund::with('user', 'predicted.type', 'predicted.market')->whereNull('deleted_at')->paginate(20);
-        
+
         // dd($refundsCollection);
         return view('admin.refund.index', compact('refundsCollection'));
     }
 
     public function store(Request $request)
     {
+        $user_id = Auth::User()->id;
         $request->validate([
             'bet_number' => 'required|exists:trends,id',
         ]);
         $trendsData = Trend::find($request->bet_number);
+        if ($trendsData->isRefund) {
+            return response()->json([
+                'message' => 'This bet has already processed for the refund. Please reload the page.',
+            ]);
+        }
         $refund = Refund::create([
-            'user_id' => Auth::User()->id,
+            'user_id' => $user_id,
             'trends_id' => $trendsData->id,
             'market_id' => $trendsData->market_id,
             'bet_number' => $trendsData->predicted_numbers,
             'status' => 'pending',
         ]);
+
+        if (!empty($refund)) {
+            $trendsData->update(['isRefund' => 1]);
+        } else {
+            return response()->json([
+                'message' => 'Something Went wrong.',
+            ]);
+        }
 
         return response()->json([
             'message' => 'Refund request submitted successfully.',

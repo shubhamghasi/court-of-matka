@@ -8,20 +8,25 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Trend extends Model
 {
     use SoftDeletes;
-    protected $fillabel = [
+    protected $fillable = [
         'predicted_numbers',
         'transaction_id',
         'market_id',
         'user_id',
-        'number_type'
+        'number_type',
+        'isRefund',
     ];
-    public function user(){
+
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
-    public function market(){
+    public function market()
+    {
         return $this->belongsTo(Market::class);
     }
-    public function type(){
+    public function type()
+    {
         return $this->belongsTo(NumberType::class, 'number_type');
     }
 }
