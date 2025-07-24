@@ -13,7 +13,7 @@ class Refund extends Model
         'user_id',
         'market_id',
         'bet_number',
-        'amount',
+        'trends_id',
         'status',
     ];
 
@@ -24,6 +24,6 @@ class Refund extends Model
 
     public function predicted()
     {
-        return $this->belongsTo(Predicted::class);
+        return $this->belongsTo(Trend::class, 'trends_id');
     }
 }

@@ -21,9 +21,12 @@ class SettingsController extends Controller
             'upi_id' => 'nullable|string|max:255',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
+            'doubt_check_amount' => 'nullable|string',
+            'trend_check_amount' => 'nullable|string',
+            'whatsapp_number' => 'nullable|numeric',
         ]);
 
-        $data = $request->only(['app_name', 'upi_id', 'meta_title', 'meta_description']);
+        $data = $request->only(['app_name', 'upi_id', 'meta_title', 'meta_description', 'trend_check_amount', 'doubt_check_amount', 'whatsapp_number']);
 
         foreach ($data as $name => $value) {
             Option::updateOrCreate(

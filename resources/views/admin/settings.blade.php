@@ -41,6 +41,26 @@
                                 <textarea name="meta_description" id="meta_description" rows="4" class="form-control">{{ old('meta_description', $options['meta_description'] ?? '') }}</textarea>
                             </div>
 
+                            <div class="mb-3">
+                                <label for="trend_check_amount" class="form-label">Trend Check Amount</label>
+                                <input type="number" step="0.01" class="form-control" name="trend_check_amount"
+                                    id="trend_check_amount"
+                                    value="{{ old('trend_check_amount', $options['trend_check_amount'] ?? '') }}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="doubt_check_amount" class="form-label">Doubt Check Amount</label>
+                                <input type="number" step="0.01" class="form-control" name="doubt_check_amount"
+                                    id="doubt_check_amount"
+                                    value="{{ old('doubt_check_amount', $options['doubt_check_amount'] ?? '') }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="whatsapp_number" class="form-label">WhatsApp Number</label>
+                                <input type="number" class="form-control" name="whatsapp_number"
+                                    id="whatsapp_number"
+                                    value="{{ old('whatsapp_number', $options['whatsapp_number'] ?? '') }}">
+                            </div>
+
                             <div class="text-end">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-save me-1"></i> Save Settings

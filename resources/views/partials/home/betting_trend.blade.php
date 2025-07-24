@@ -49,7 +49,7 @@
                             <h3 class="text-lg font-semibold text-gray-800">Premium Insights</h3>
                             <p class="text-gray-600">Get detailed betting trends and analysis</p>
                         </div>
-                        <div class="text-2xl font-bold text-indigo-600">₹99</div>
+                        <div class="text-2xl font-bold text-indigo-600">₹{{ !empty($options['trend_check_amount']) ? $options['trend_check_amount'] : '0.00' }}</div>
                     </div>
 
                     <div class="space-y-4">

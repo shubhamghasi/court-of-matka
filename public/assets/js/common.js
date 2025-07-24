@@ -55,20 +55,16 @@ $(document).ready(function () {
     $("#refundForm").on("submit", function (e) {
         e.preventDefault();
 
-        let marketId = $("#refund-market").val();
         let betNumber = $("#betted_number").val();
-        let amount = $("#amount-played").val();
 
-        if (!marketId || !betNumber || !amount) {
-            alert("Please fill in all required fields.");
+        if (!betNumber) {
+            alert("Please select the valid bet number.");
             return;
         }
 
         const formData = {
             _token: csrf_token,
-            market_id: marketId,
             bet_number: betNumber,
-            amount: amount,
         };
 
         $.ajax({

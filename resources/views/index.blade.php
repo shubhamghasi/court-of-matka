@@ -81,7 +81,7 @@
                     showNotification(message);
 
                     // Schedule next after 5–10 seconds randomly
-                    delay = Math.floor(Math.random() * 5000) + 5000;
+                    delay = Math.floor(Math.random() * 15000) + 15000;
                     setTimeout(scheduleNotification, delay);
                 }
 

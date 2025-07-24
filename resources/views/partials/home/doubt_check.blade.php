@@ -46,7 +46,9 @@
                             <h3 class="text-lg font-semibold text-gray-800">Premium Prediction</h3>
                             <p class="text-gray-600">Get expert analysis on your number</p>
                         </div>
-                        <div class="text-2xl font-bold text-indigo-600">₹49</div>
+                        <div class="text-2xl font-bold text-indigo-600">
+                            ₹{{ !empty($options['doubt_check_amount']) ? $options['doubt_check_amount'] : '0.00' }}
+                        </div>
                     </div>
 
                     <div class="space-y-4">

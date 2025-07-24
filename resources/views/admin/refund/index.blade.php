@@ -23,9 +23,14 @@
                                     Bet Number
                                 </h6>
                             </th>
+                            <th class="min-width">
+                                <h6 class="text-sm text-medium">
+                                    Market Name
+                                </h6>
+                            </th>
                             <th>
                                 <h6 class="text-sm text-medium">
-                                    Bet Amount
+                                    Number Type
                                 </h6>
                             </th>
                             <th>
@@ -58,10 +63,13 @@
                                     <p class="text-sm">{{ $refund->bet_number }}</p>
                                 </td>
                                 <td>
-                                    <p class="text-sm">{{ $refund->amount }}</p>
+                                    <p class="text-sm">{{ $refund?->predicted?->market?->name }}</p>
                                 </td>
                                 <td>
-                                    <p class="text-sm">{{ rand(1, 9) }}</p>
+                                    <p class="text-sm">{{ ucfirst($refund?->predicted?->type?->name) }}</p>
+                                </td>
+                                <td>
+                                    <p class="text-sm">{{ $refund?->predicted?->predicted_numbers }}</p>
                                 </td>
                                 <td class="text-center">
                                     @php
