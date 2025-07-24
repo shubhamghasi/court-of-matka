@@ -64,7 +64,6 @@ $(document).ready(function () {
             return;
         }
 
-
         const formData = {
             _token: csrf_token,
             market_id: marketId,
@@ -109,13 +108,13 @@ $("#trendsForm").on("submit", function (e) {
     url = "/prediction";
 
     // Reset previous messages
-    $("#errorMessage").hide();
-    $("#successMessage").hide();
+    $("#PredictionerrorMessage").hide();
+    $("#PredictionsuccessMessage").hide();
 
     // Basic validation
     if (!transactionId || transactionId.length < 8) {
         $("#errorText").text("Please enter a valid Transaction ID.");
-        $("#errorMessage").fadeIn();
+        $("#PredictionerrorMessage").fadeIn();
         return;
     }
 
@@ -147,9 +146,12 @@ $("#trendsForm").on("submit", function (e) {
             // Optional: show loader or disable button
         },
         success: function (response) {
-            $("#successMessage").fadeIn();
-            $("#errorMessage").hide();
+            $("#predictionSuccessMessage").fadeIn();
+            $("#PredictionerrorMessage").hide();
             form.trigger("reset");
+            setTimeout(() => {
+                $("#predictionSuccessMessage").fadeOut();
+            }, 4000);
         },
         error: function (xhr) {
             let message =
@@ -169,7 +171,7 @@ $("#trendsForm").on("submit", function (e) {
             }
 
             $("#errorText").text(message);
-            $("#errorMessage").fadeIn();
+            $("#PredictionerrorMessage").fadeIn();
         },
     });
 });

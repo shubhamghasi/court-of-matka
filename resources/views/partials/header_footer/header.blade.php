@@ -10,11 +10,10 @@
             <h1 class="text-2xl font-bold">Court of Matka</h1>
         </div>
         <nav>
-            <button @click="toggleMenu()" class="md:hidden text-white focus:outline-none">
+            <button id="menu-toggle-btn" class="md:hidden text-white focus:outline-none">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
-                    </path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
             </button>
             <ul class="hidden md:flex space-x-6">
@@ -26,7 +25,6 @@
                                 class="text-purple-100 hover:text-white font-medium transition duration-200">
                                 Logout
                             </button>
-
                         </form>
                     </li>
                 @else
@@ -36,19 +34,35 @@
             </ul>
         </nav>
     </div>
+
     <!-- Mobile Menu -->
-    <div x-show="mobileMenu" x-transition="" class="md:hidden bg-indigo-800 py-2">
+    <div id="mobileMenu" class="hidden md:hidden bg-indigo-800 py-2">
         <ul class="container mx-auto px-4 space-y-2">
-            <li><a href="#intro" class="block py-2 hover:text-indigo-200 transition"
-                    @click="mobileMenu = false">Home</a></li>
-            <li><a href="#play" class="block py-2 hover:text-indigo-200 transition"
-                    @click="mobileMenu = false">Play</a></li>
-            <li><a href="#refund" class="block py-2 hover:text-indigo-200 transition"
-                    @click="mobileMenu = false">Refund</a></li>
-            <li><a href="#trends" class="block py-2 hover:text-indigo-200 transition"
-                    @click="mobileMenu = false">Trends</a></li>
-            <li><a href="#doubt" class="block py-2 hover:text-indigo-200 transition"
-                    @click="mobileMenu = false">Prediction</a></li>
+            <li><a href="#intro" class="block py-2 hover:text-indigo-200 transition">Home</a></li>
+            <li><a href="#play" class="block py-2 hover:text-indigo-200 transition">Play</a></li>
+            <li><a href="#refund" class="block py-2 hover:text-indigo-200 transition">Refund</a></li>
+            <li><a href="#trends" class="block py-2 hover:text-indigo-200 transition">Trends</a></li>
+            <li><a href="#doubt" class="block py-2 hover:text-indigo-200 transition">Prediction</a></li>
         </ul>
     </div>
 </header>
+
+@push('scripts')
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const toggleBtn = document.getElementById('menu-toggle-btn');
+            const mobileMenu = document.getElementById('mobileMenu');
+
+            toggleBtn.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Optional: auto-close menu on mobile when a link is clicked
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+        });
+    </script>
+@endpush

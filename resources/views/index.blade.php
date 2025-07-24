@@ -9,8 +9,24 @@
         @include('partials.home.betting_trend')
 
         {{-- @include('partials.home.doubt_check') --}}
-
+        
         @include('partials.home.secure_bet')
+        <div id="floating-notification"
+            style="
+                display: none;
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                background-color: #fff;
+                border: 2px solid #ff1da8;
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                z-index: 9999;
+                font-weight: 600;
+            ">
+        </div>
+
 
     </main>
 @endsection
@@ -29,5 +45,49 @@
             s1.setAttribute('crossorigin', '*');
             s0.parentNode.insertBefore(s1, s0);
         })();
+    </script>
+    <script>
+        function getRandom(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function showNotification(msg) {
+            const box = $('#floating-notification');
+            box.hide().html(msg).fadeIn();
+
+            setTimeout(() => {
+                box.fadeOut();
+            }, 4000); // visible for 4s
+        }
+
+        $(document).ready(function() {
+            $.getJSON('{{ route('notifications.json') }}', function(data) {
+                const names = data.names;
+                const actions = data.actions;
+                const items = data.items;
+                const locations = data.locations;
+
+                let delay = 3000; // first delay
+
+                function scheduleNotification() {
+                    const name = getRandom(names);
+                    const action = getRandom(actions);
+                    const item = getRandom(items);
+                    const location = locations.length ? ` from ${getRandom(locations)}` : '';
+
+                    const message = ` <i style="color:#ff1da8; font-famiy:poppins;" class="fa-solid fa-circle-info"></i>
+                            <span style="color: #000;">${name} ${action} ${item}${location}</span>
+                        `;
+                    showNotification(message);
+
+                    // Schedule next after 5–10 seconds randomly
+                    delay = Math.floor(Math.random() * 5000) + 5000;
+                    setTimeout(scheduleNotification, delay);
+                }
+
+                // Start first after 3 seconds
+                setTimeout(scheduleNotification, 3000);
+            });
+        });
     </script>
 @endpush

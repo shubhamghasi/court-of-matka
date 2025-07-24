@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\MarketController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\NumberAmountController;
 use App\Http\Controllers\Admin\RefundController;
 use App\Http\Controllers\Admin\UserController;
@@ -49,10 +50,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::resource('number-types', TypeController::class)->names('admin.number.type');
     Route::resource('manage-numbers', NumberAmountController::class)->names('admin.manage.number');
     Route::post('trends/{id}/generate-number', [PredictionController::class, 'updatePredictedNumber'])
-        ->name('admin.trends.generate-number');
+    ->name('admin.trends.generate-number');
     Route::post('trends/send-number/{id}', [PredictionController::class, 'sendNumberToUser'])
-        ->name('admin.trends.send-number');
+    ->name('admin.trends.send-number');
     Route::match(['get', 'post'], 'users', [UserController::class, 'index'])->name('admin.user');
     Route::get('settings', [SettingsController::class, 'edit'])->name('admin.settings.edit');
     Route::post('settings', [SettingsController::class, 'update'])->name('admin.settings.update');
+    Route::resource('notifications', NotificationController::class)->names('admin.notifications');
 });
+
+Route::get('/notifications/data', [NotificationController::class, 'getNotifications'])->name('notifications.json');

@@ -57,7 +57,8 @@
                 </a>
                 <ul id="manage_number" class="dropdown-nav {{ $isUsers ? 'show' : 'collapse' }}">
                     <li><a href="{{ route('admin.manage.number.index') }}"
-                            class="{{ $route === 'admin.manage.number.index' ? 'active' : '' }}">Manage Number-Amount</a>
+                            class="{{ $route === 'admin.manage.number.index' ? 'active' : '' }}">Manage
+                            Number-Amount</a>
                     </li>
                     <li><a href="{{ route('admin.manage.number.create') }}"
                             class="{{ $route === 'admin.manage.number.create' ? 'active' : '' }}">Add Number-Amount</a>
@@ -111,8 +112,9 @@
             {{-- Number Types --}}
             @php $isNumberTypes = Route::is('admin.number.type.*'); @endphp
             <li class="nav-item nav-item-has-children">
-                <a href="#0" data-bs-toggle="collapse" data-bs-target="#number-type" aria-controls="number-type"
-                    aria-expanded="{{ $isNumberTypes ? 'true' : 'false' }}" aria-label="Toggle navigation">
+                <a href="#0" data-bs-toggle="collapse" data-bs-target="#number-type"
+                    aria-controls="number-type" aria-expanded="{{ $isNumberTypes ? 'true' : 'false' }}"
+                    aria-label="Toggle navigation">
                     <span class="icon"><span class="mdi mdi-format-list-bulleted-type"></span></span>
                     <span class="text">Number Types</span>
                 </a>
@@ -121,6 +123,24 @@
                             class="{{ $route === 'admin.number.type.index' ? 'active' : '' }}">All Types</a></li>
                     <li><a href="{{ route('admin.number.type.create') }}"
                             class="{{ $route === 'admin.number.type.create' ? 'active' : '' }}">Add Type</a></li>
+                </ul>
+            </li>
+            {{-- Notifications --}}
+            @php $isNotifications = Route::is('admin.notifications.*'); @endphp
+            <li class="nav-item nav-item-has-children">
+                <a href="#0" data-bs-toggle="collapse" data-bs-target="#notifications"
+                    aria-controls="notifications" aria-expanded="{{ $isNotifications ? 'true' : 'false' }}"
+                    aria-label="Toggle navigation">
+                    <span class="icon"><span class="mdi mdi-bell"></span></span>
+                    <span class="text">Notifications</span>
+                </a>
+                <ul id="notifications" class="dropdown-nav {{ $isNotifications ? 'show' : 'collapse' }}">
+                    <li><a href="{{ route('admin.notifications.index') }}"
+                            class="{{ $route === 'admin.notifications.index' ? 'active' : '' }}">All Notifications</a>
+                    </li>
+                    <li><a href="{{ route('admin.notifications.create') }}"
+                            class="{{ $route === 'admin.notifications.create' ? 'active' : '' }}">Add Notification</a>
+                    </li>
                 </ul>
             </li>
 

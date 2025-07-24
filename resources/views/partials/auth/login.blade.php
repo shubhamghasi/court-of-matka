@@ -27,7 +27,7 @@
 
         <!-- Remember Me -->
         <div class="flex items-center">
-            <input id="remember-me" name="remember" type="checkbox"
+            <input id="remember-me" name="remember" type="checkbox" value="1" checked
                 class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
             <label for="remember-me" class="ml-2 block text-sm text-gray-700">Remember me</label>
         </div>

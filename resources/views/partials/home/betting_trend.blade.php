@@ -93,7 +93,7 @@
             </form>
 
             <!-- Static Trends Results -->
-            <div id="successMessage" style="display: block;"
+            <div id="predictionSuccessMessage" style="display: none;"
                 class="mt-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded relative"
                 role="alert">
                 <span class="block sm:inline"> We have recieved your query! We will send you an email within 10 minutes
@@ -108,7 +108,7 @@
                 </button>
             </div>
             <!-- Error Message Block -->
-            <div id="errorMessage" style="display: none;"
+            <div id="PredictionerrorMessage" style="display: none;"
                 class="mt-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
                 <span class="block sm:inline" id="errorText">Something went wrong.</span>
                 <button class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="$('#errorMessage').fadeOut();">
