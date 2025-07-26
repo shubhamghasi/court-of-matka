@@ -13,43 +13,41 @@ class RefundController extends Controller
     //
     public function index()
     {
-        $refundsCollection = Refund::with('user', 'predicted.type', 'predicted.market')->whereNull('deleted_at')->paginate(20);
+        $refundsCollection = Refund::with('user')
+            ->whereNull('deleted_at')
+            ->orderByDesc('created_at')
+            ->paginate(20);
 
-        // dd($refundsCollection);
         return view('admin.refund.index', compact('refundsCollection'));
     }
 
     public function store(Request $request)
     {
-        $user_id = Auth::User()->id;
+        $user_id = Auth::id();
+
         $request->validate([
-            'bet_number' => 'required|exists:trends,id',
-        ]);
-        $trendsData = Trend::find($request->bet_number);
-        if ($trendsData->isRefund) {
-            return response()->json([
-                'message' => 'This bet has already processed for the refund. Please reload the page.',
-            ]);
-        }
-        $refund = Refund::create([
-            'user_id' => $user_id,
-            'trends_id' => $trendsData->id,
-            'market_id' => $trendsData->market_id,
-            'bet_number' => $trendsData->predicted_numbers,
-            'status' => 'pending',
+            'market_name' => 'required|string|max:255',
+            'bet_number'  => 'required|string|max:50',
         ]);
 
-        if (!empty($refund)) {
-            $trendsData->update(['isRefund' => 1]);
-        } else {
+        $refund = Refund::create([
+            'user_id'     => $user_id,
+            'market_name' => $request->input('market_name'),
+            'bet_number'  => $request->input('bet_number'),
+            'status'      => 'pending',
+        ]);
+
+        if (!$refund) {
             return response()->json([
-                'message' => 'Something Went wrong.',
-            ]);
+                'message' => 'Something went wrong. Please try again.',
+                'status'  => false,
+            ], 500);
         }
 
         return response()->json([
             'message' => 'Refund request submitted successfully.',
-            'data' => $refund
+            'status'  => true,
+            'data'    => $refund,
         ]);
     }
 

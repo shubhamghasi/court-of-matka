@@ -79,36 +79,47 @@ $("#play_matka_form").on("submit", function (e) {
 });
 
 $(document).ready(function () {
+    const csrf_token = $('meta[name="csrf-token"]').attr("content");
+
     $("#refundForm").on("submit", function (e) {
         e.preventDefault();
 
-        let betNumber = $("#betted_number").val();
+        const marketName = $("#market_name").val().trim();
+        const betNumber = $("#bet_number").val().trim();
 
-        if (!betNumber) {
-            alert("Please select the valid bet number.");
+        if (!marketName || !betNumber) {
+            alert("Please fill in all required fields.");
             return;
         }
-
-        const formData = {
-            _token: csrf_token,
-            bet_number: betNumber,
-        };
 
         $.ajax({
             type: "POST",
             url: "/refunds/store",
-            data: formData,
+            data: {
+                _token: csrf_token,
+                market_name: marketName,
+                bet_number: betNumber,
+            },
             dataType: "json",
             success: function (response) {
-                console.log(response);
-                $("#refundSuccess").text(response.message);
-                $("#refundSuccess").removeClass("hidden");
-                $("#whatsappInstruction").removeClass("hidden"); // 👈 show WhatsApp div
+                $("#refundSuccess")
+                    .text(response.message)
+                    .removeClass("hidden");
+                $("#whatsappInstruction").removeClass("hidden"); // Optional
                 $("#refundForm")[0].reset();
             },
             error: function (xhr) {
-                console.error(xhr.responseText);
-                alert("An error occurred. Please try again.");
+                let message = "An error occurred. Please try again.";
+
+                if (xhr.status === 422 && xhr.responseJSON?.errors) {
+                    message = Object.values(xhr.responseJSON.errors)
+                        .map((err) => err[0])
+                        .join(" ");
+                } else if (xhr.responseJSON?.message) {
+                    message = xhr.responseJSON.message;
+                }
+
+                alert(message);
             },
         });
     });

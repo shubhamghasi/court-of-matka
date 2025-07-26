@@ -13,40 +13,22 @@
                     <thead>
                         <tr>
                             <th>
-                                <h6 class="text-sm text-medium">User Id</h6>
+                                <h6 class="text-sm text-medium">User ID</h6>
                             </th>
                             <th>
                                 <h6 class="text-sm text-medium">Name</h6>
                             </th>
-                            <th class="min-width">
-                                <h6 class="text-sm text-medium">
-                                    Bet Number
-                                </h6>
-                            </th>
-                            <th class="min-width">
-                                <h6 class="text-sm text-medium">
-                                    Market Name
-                                </h6>
+                            <th>
+                                <h6 class="text-sm text-medium">Market Name</h6>
                             </th>
                             <th>
-                                <h6 class="text-sm text-medium">
-                                    Number Type
-                                </h6>
+                                <h6 class="text-sm text-medium">Bet Number</h6>
                             </th>
                             <th>
-                                <h6 class="text-sm text-medium">
-                                    Predicted Number
-                                </h6>
+                                <h6 class="text-sm text-medium text-center">Status</h6>
                             </th>
                             <th>
-                                <h6 class="text-sm text-medium text-center">
-                                    Status
-                                </h6>
-                            </th>
-                            <th>
-                                <h6 class="text-sm text-medium text-end">
-                                    Action
-                                </h6>
+                                <h6 class="text-sm text-medium text-end">Action</h6>
                             </th>
                         </tr>
                     </thead>
@@ -60,16 +42,10 @@
                                     <p class="text-sm">{{ $refund->user?->name }}</p>
                                 </td>
                                 <td>
+                                    <p class="text-sm">{{ $refund->market_name }}</p>
+                                </td>
+                                <td>
                                     <p class="text-sm">{{ $refund->bet_number }}</p>
-                                </td>
-                                <td>
-                                    <p class="text-sm">{{ $refund?->predicted?->market?->name }}</p>
-                                </td>
-                                <td>
-                                    <p class="text-sm">{{ ucfirst($refund?->predicted?->type?->name) }}</p>
-                                </td>
-                                <td>
-                                    <p class="text-sm">{{ $refund?->predicted?->predicted_numbers }}</p>
                                 </td>
                                 <td class="text-center">
                                     @php
@@ -82,13 +58,11 @@
                                         $statusLabel = match ($refund->status) {
                                             'pending' => 'Pending',
                                             'completed' => 'Completed',
-                                            default => 'In Process',
+                                            default => 'In Progress',
                                         };
                                     @endphp
-
                                     <p class="text-sm {{ $statusClass }}">{{ $statusLabel }}</p>
                                 </td>
-
                                 <td>
                                     <div class="action justify-content-end">
                                         <button class="more-btn ml-10 dropdown-toggle" id="moreAction{{ $refund->id }}"
@@ -134,7 +108,6 @@
                         @endforeach
                     </tbody>
                 </table>
-                <!-- End Table -->
             </div>
         </div>
     </div>

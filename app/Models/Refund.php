@@ -7,23 +7,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Refund extends Model
 {
-    //
     use SoftDeletes;
+
     protected $fillable = [
         'user_id',
-        'market_id',
+        'market_name',   // simple string instead of market_id
         'bet_number',
-        'trends_id',
-        'status',
+        'status',        // optional: default status could be 'pending'
     ];
 
+    // User relationship (optional — keep if you're still associating refunds with users)
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function predicted()
-    {
-        return $this->belongsTo(Trend::class, 'trends_id');
     }
 }

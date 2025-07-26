@@ -98,7 +98,7 @@
 
                     const notif = getRandom(validNow);
                     const message = `
-                    <i style="color:#ff1da8;" class="fa-solid fa-circle-info"></i>
+                    <i style="color:#ffd43b;" class="fa-solid fa-bell"></i>
                     <span style="color: #000;">${notif.message}</span>
                 `;
 

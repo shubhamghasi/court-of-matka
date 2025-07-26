@@ -24,21 +24,23 @@
             </div>
 
             <form id="refundForm" class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-1">
+                <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
                     <div>
-                        <label for="betted_number" class="block text-sm font-medium text-gray-700 mb-1">Bet
-                            Number</label>
-                        <select name="bet_number" id="betted_number"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                            <option value="" disabled selected>Select Your Betted Number</option>
-                            @foreach ($userPredictionsCollection as $prediction)
-                                <option
-                                    {{ $refundCollection->contains('trends_id', $prediction->id) ? 'disabled' : '' }}
-                                    value="{{ $prediction->id }}">#ID: {{ $prediction->id }} #Bet Number:
-                                    {{ $prediction->predicted_numbers ?? '2' }} {{ $prediction->created_on }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <label for="market_name" class="block text-sm font-medium text-gray-700 mb-1">
+                            Market Name
+                        </label>
+                        <input type="text" name="market_name" id="market_name"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="Enter Market Name" required>
+                    </div>
+
+                    <div>
+                        <label for="bet_number" class="block text-sm font-medium text-gray-700 mb-1">
+                            Bet Number
+                        </label>
+                        <input type="text" name="bet_number" id="bet_number"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="Enter Bet Number" required>
                     </div>
                 </div>
 
@@ -80,7 +82,8 @@
                         process.</p>
                 </div>
 
-                <a href="https://wa.me/{{ !empty($options['whatsapp_number']) ? $options['whatsapp_number'] : '9878113585' }}" target="_blank"
+                <a href="https://wa.me/{{ !empty($options['whatsapp_number']) ? $options['whatsapp_number'] : '9878113585' }}"
+                    target="_blank"
                     class="inline-flex items-center justify-center gap-2 bg-green-500 text-white px-5 py-2.5 rounded-lg hover:bg-green-600 transition text-sm w-full sm:w-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 fill-white" viewBox="0 0 24 24">
                         <path
