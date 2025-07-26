@@ -29,6 +29,19 @@ class HomeController extends Controller
         $numberTypes = NumberType::get();
         $options = Option::pluck('option_value', 'option_name')->toArray();
 
-        return view('index', compact('marketsCollection', 'userPredictionsCollection', 'refundCollection', 'numberTypes', 'options'));
+
+        $unreadNotificationCount = Trend::where('user_id', $user_id)
+            ->whereNotNull('predicted_numbers')
+            ->where('is_read', false)
+            ->count();
+
+        return view('index', compact(
+            'marketsCollection',
+            'userPredictionsCollection',
+            'refundCollection',
+            'numberTypes',
+            'options',
+            'unreadNotificationCount'
+        ));
     }
 }

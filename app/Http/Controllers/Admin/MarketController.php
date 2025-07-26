@@ -68,13 +68,12 @@ class MarketController extends Controller
     {
         $market = Market::findOrFail($id);
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
-            'status' => 'required|in:0,1',
-        ]);
-
+        $validated = [
+            "name" => $request->name,
+            "start_time" => $request->start_time,
+            "end_time" => $request->end_time,
+            "status" => $request->status
+        ];
         $market->update($validated);
 
         return redirect()->route('admin.market.index')->with('success', 'Market updated successfully');

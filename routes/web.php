@@ -31,6 +31,9 @@ Route::middleware(['auth', 'validated_email'])->group(function () {
     Route::match(['get', 'post'], 'prediction', [PredictionController::class, 'index'])->name('predict.store');
     Route::post('refunds/store', [RefundController::class, 'store'])->name('refund.store');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/notifications', [NotificationController::class, 'getAllNotificationOfUser'])->name('getAllNotificationOfUser');
+    Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])
+        ->name('notifications.markAsRead');
 });
 
 
@@ -50,9 +53,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::resource('number-types', TypeController::class)->names('admin.number.type');
     Route::resource('manage-numbers', NumberAmountController::class)->names('admin.manage.number');
     Route::post('trends/{id}/generate-number', [PredictionController::class, 'updatePredictedNumber'])
-    ->name('admin.trends.generate-number');
+        ->name('admin.trends.generate-number');
     Route::post('trends/send-number/{id}', [PredictionController::class, 'sendNumberToUser'])
-    ->name('admin.trends.send-number');
+        ->name('admin.trends.send-number');
     Route::match(['get', 'post'], 'users', [UserController::class, 'index'])->name('admin.user');
     Route::get('settings', [SettingsController::class, 'edit'])->name('admin.settings.edit');
     Route::post('settings', [SettingsController::class, 'update'])->name('admin.settings.update');

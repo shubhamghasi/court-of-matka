@@ -17,8 +17,23 @@
                 </svg>
             </button>
             <ul class="hidden md:flex space-x-6">
+                <li>
+                    <a href="{{ route('getAllNotificationOfUser') }}"
+                        class="btn-white text-black px-6 py-3 rounded-lg hover:opacity-90 transition flex items-center relative">
+                        <div class="relative">
+                            <i class="fa-solid fa-bell text-yellow-400 text-lg"></i>
+                            <!-- Notification Badge -->
+                            <span
+                                class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-semibold rounded-full px-1.5 py-0.5 leading-none">
+                                {{ $unreadNotificationCount ?? 10 }}
+                            </span>
+                        </div>
+                        <span class="ml-2">Notifications</span>
+                    </a>
+                </li>
+
                 @if (Auth::user())
-                    <li>
+                    {{-- <li>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit"
@@ -26,7 +41,7 @@
                                 Logout
                             </button>
                         </form>
-                    </li>
+                    </li> --}}
                 @else
                     <li><a href="#intro" class="hover:text-indigo-200 transition">Login</a></li>
                     <li><a href="{{ route('') }}" class="hover:text-indigo-200 transition">Signup</a></li>

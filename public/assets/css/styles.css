@@ -74,6 +74,10 @@ body {
     background: linear-gradient(135deg, #4f46e5 0%, #7e22ce 100%);
 }
 
+.btn-white {
+    background-color: white;
+}
+
 /* ! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com */
 *,
 ::after,

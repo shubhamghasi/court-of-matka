@@ -21,6 +21,7 @@ class PredictionController extends Controller
             $request->validate([
                 'market_id' => 'required|exists:markets,id',
                 'transaction_id' => 'required|string|min:8|unique:trends,transaction_id',
+                'number_type' => 'required'
             ]);
 
             // Get market and validate time
@@ -37,38 +38,47 @@ class PredictionController extends Controller
                 ]);
             }
 
+            // Get predicted numbers (top 10 least-bet)
+            $number_type = $request->input('number_type');
+            $predicted_numbers = json_encode($this->getLeastUsedNumbers($number_type));
+
             // Proceed to save
             $trend = new Trend();
             $trend->user_id = Auth::id();
             $trend->market_id = $request->input('market_id');
             $trend->transaction_id = $request->input('transaction_id');
-            $trend->number_type = $request->input('number_type');
-            $trend->predicted_numbers = null; // can be set later
+            $trend->number_type = $number_type;
+            $trend->predicted_numbers = $predicted_numbers;
             $trend->save();
 
             return response()->json([
                 'status' => true,
-                'message' => 'Transaction submitted successfully.',
+                'message' => 'Trend created successfully with top predictions.',
                 'data' => $trend
             ]);
         }
 
-        // If not POST, you can return a view or redirect (optional)
-        return view('your.trend.index.view'); // replace with your actual view
+        // 👇 Fetch all trend requests for the admin listing page
+        $trendsRequestCollection = Trend::with(['user', 'market', 'type'])
+            ->latest()
+            ->get();
+
+        return view('admin.trends.index', compact('trendsRequestCollection'));
     }
 
     public function updatePredictedNumber(Request $request, $id)
     {
         $is_random = filter_var($request->is_random, FILTER_VALIDATE_BOOLEAN);
         $type = $request->type;
+
         $predicted_number = $this->getPredictedNumber($type, $is_random);
-        // dd($predicted_number);
+
         $trend = Trend::findOrFail($id);
-        $trend->predicted_numbers = $predicted_number;
+        $trend->predicted_numbers = json_encode($predicted_number); // Save array as JSON
         $trend->save();
 
         return redirect()->route('admin.trends')
-            ->with('success', 'Predicted number generated successfully.');
+            ->with('success', 'Predicted numbers generated successfully.');
     }
 
     private function getPredictedNumber($type = 'single', $is_random = true)
@@ -123,36 +133,37 @@ class PredictionController extends Controller
 
     private function getLeastChosenNumberByType($type)
     {
-        switch ($type) {
-            case 'single':
-                return $this->getLeastUsedNumber('single');
+        $validTypes = ['single', 'jodi', 'single_patti', 'double_patti', 'triple_patti'];
 
-            case 'jodi':
-                return $this->getLeastUsedNumber('jodi');
-
-            case 'single_patti':
-                return $this->getLeastUsedNumber('single_patti');
-
-            case 'double_patti':
-                return $this->getLeastUsedNumber('double_patti');
-
-            case 'triple_patti':
-                return $this->getLeastUsedNumber('triple_patti');
-
-            default:
-                return null;
+        if (!in_array($type, $validTypes)) {
+            return null;
         }
+
+        return $this->getLeastUsedNumbers($type); // returns array of 10
     }
 
-    private function getLeastUsedNumber($type)
+    private function getLeastUsedNumbers($type)
     {
         $type_id = NumberType::where('name', $type)->value('id');
-        return DB::table('matka_bets')
+
+        $total = DB::table('matka_bets')
+            ->where('number_type_id', $type_id)
+            ->count();
+
+        $topNumbers = DB::table('matka_bets')
+            ->where('number_type_id', $type_id)
             ->select('bet_number as number', DB::raw('COUNT(*) as total_count'))
             ->groupBy('bet_number')
             ->orderBy('total_count', 'asc')
-            ->limit(1)
-            ->value('number');
+            ->limit(10)
+            ->get();
+
+        return $topNumbers->map(function ($item) use ($total) {
+            return [
+                'number' => $item->number,
+                'percentage' => round(($item->total_count / max($total, 1)) * 100, 1)
+            ];
+        })->toArray();
     }
 
 

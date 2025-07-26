@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
@@ -74,5 +75,35 @@ class NotificationController extends Controller
         return response()->json([
             'notifications' => $notifications
         ]);
+    }
+
+    public function getAllNotificationOfUser()
+    {
+        $userId = Auth::user()->id;
+
+        // Get all unread trend notifications for the user
+        $trendNotifications = \App\Models\Trend::with(['market', 'type'])
+            ->where('user_id', $userId)
+            ->whereNotNull('predicted_numbers')
+            ->where('is_read', false)
+            ->orderByDesc('created_at')
+            ->get();
+
+        // Optional: Count of unread notifications
+        $unreadCount = $trendNotifications->count();
+
+        return view('notifications.index', compact('trendNotifications', 'unreadCount'));
+    }
+
+    public function markAsRead($id)
+    {
+        $trend = \App\Models\Trend::where('user_id', Auth::id())
+            ->where('id', $id)
+            ->firstOrFail();
+
+        $trend->is_read = true;
+        $trend->save();
+
+        return response()->json(['status' => true, 'message' => 'Marked as read']);
     }
 }
