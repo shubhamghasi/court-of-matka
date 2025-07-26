@@ -9,7 +9,7 @@
         @include('partials.home.betting_trend')
 
         {{-- @include('partials.home.doubt_check') --}}
-        
+
         @include('partials.home.secure_bet')
         <div id="floating-notification"
             style="
@@ -57,36 +57,59 @@
 
             setTimeout(() => {
                 box.fadeOut();
-            }, 4000); // visible for 4s
+            }, 5000); // show for 5 seconds
+        }
+
+        function isWithinTime(start, end) {
+            const now = new Date();
+            const nowSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+
+            const [startH, startM, startS = 0] = start.split(':').map(Number);
+            const [endH, endM, endS = 0] = end.split(':').map(Number);
+
+            const startSeconds = startH * 3600 + startM * 60 + startS;
+            const endSeconds = endH * 3600 + endM * 60 + endS;
+
+            // Handles normal and overnight time windows
+            if (startSeconds <= endSeconds) {
+                return nowSeconds >= startSeconds && nowSeconds <= endSeconds;
+            } else {
+                return nowSeconds >= startSeconds || nowSeconds <= endSeconds;
+            }
         }
 
         $(document).ready(function() {
             $.getJSON('{{ route('notifications.json') }}', function(data) {
-                const names = data.names;
-                const actions = data.actions;
-                const items = data.items;
-                const locations = data.locations;
+                const notifications = data.notifications;
 
-                let delay = 3000; // first delay
+                if (!notifications.length) return;
 
                 function scheduleNotification() {
-                    const name = getRandom(names);
-                    const action = getRandom(actions);
-                    const item = getRandom(items);
-                    const location = locations.length ? ` from ${getRandom(locations)}` : '';
+                    // At the moment of displaying, filter again by time
+                    const validNow = notifications.filter(n =>
+                        isWithinTime(n.start_time, n.end_time)
+                    );
 
-                    const message = ` <i style="color:#ff1da8; font-famiy:poppins;" class="fa-solid fa-circle-info"></i>
-                            <span style="color: #000;">${name} ${action} ${item}${location}</span>
-                        `;
+                    if (!validNow.length) {
+                        // If nothing valid right now, check again in 30s
+                        setTimeout(scheduleNotification, 30000);
+                        return;
+                    }
+
+                    const notif = getRandom(validNow);
+                    const message = `
+                    <i style="color:#ff1da8;" class="fa-solid fa-circle-info"></i>
+                    <span style="color: #000;">${notif.message}</span>
+                `;
+
                     showNotification(message);
 
-                    // Schedule next after 5–10 seconds randomly
-                    delay = Math.floor(Math.random() * 15000) + 15000;
+                    const delay = Math.floor(Math.random() * 5000) + 25000; // 25–30 sec
                     setTimeout(scheduleNotification, delay);
                 }
 
-                // Start first after 3 seconds
-                setTimeout(scheduleNotification, 3000);
+                // Start after initial delay
+                setTimeout(scheduleNotification, 10000);
             });
         });
     </script>

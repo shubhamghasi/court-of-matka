@@ -32,12 +32,16 @@ class MarketController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        $name = $request->name;
-        $result = Market::create(['name' => $name]);
-        if ($result) {
-            return redirect()->route('admin.market.index');
-        }
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
+            'status' => 'required|in:0,1',
+        ]);
+
+        Market::create($validated);
+
+        return redirect()->route('admin.market.index')->with('success', 'Market created successfully');
     }
 
     /**
@@ -53,7 +57,8 @@ class MarketController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $market = Market::findOrFail($id);
+        return view('admin.market.create', compact('market'));
     }
 
     /**
@@ -61,7 +66,18 @@ class MarketController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $market = Market::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
+            'status' => 'required|in:0,1',
+        ]);
+
+        $market->update($validated);
+
+        return redirect()->route('admin.market.index')->with('success', 'Market updated successfully');
     }
 
     /**

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Mail\PredictedNumberMail;
+use App\Models\Market;
 use App\Models\NumberType;
 use Illuminate\Http\Request;
 use App\Models\Trend;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -21,8 +23,23 @@ class PredictionController extends Controller
                 'transaction_id' => 'required|string|min:8|unique:trends,transaction_id',
             ]);
 
+            // Get market and validate time
+            $market = Market::findOrFail($request->input('market_id'));
+
+            $now = Carbon::now()->format('H:i:s');
+            $start = $market->start_time;
+            $end = $market->end_time;
+
+            if ($now < $start || $now > $end) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Market is currently inactive. Prediction can only be submitted between ' . $start . ' and ' . $end . '.'
+                ]);
+            }
+
+            // Proceed to save
             $trend = new Trend();
-            $trend->user_id = Auth::user()->id;
+            $trend->user_id = Auth::id();
             $trend->market_id = $request->input('market_id');
             $trend->transaction_id = $request->input('transaction_id');
             $trend->number_type = $request->input('number_type');
@@ -36,8 +53,8 @@ class PredictionController extends Controller
             ]);
         }
 
-        $trendsRequestCollection = Trend::with('type')->latest()->paginate(20);
-        return view('admin.trends.index', compact('trendsRequestCollection'));
+        // If not POST, you can return a view or redirect (optional)
+        return view('your.trend.index.view'); // replace with your actual view
     }
 
     public function updatePredictedNumber(Request $request, $id)

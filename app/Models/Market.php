@@ -7,10 +7,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Market extends Model
 {
-    //
     use SoftDeletes;
-    protected $fillable =[
+
+    protected $fillable = [
         'name',
-        'status'
+        'status',
+        'start_time',
+        'end_time',
+    ];
+
+    protected $casts = [
+        'start_time' => 'string',
+        'end_time' => 'string',
     ];
 }

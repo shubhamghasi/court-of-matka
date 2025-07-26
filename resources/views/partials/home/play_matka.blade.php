@@ -117,30 +117,5 @@
         function hideSuccessMessage() {
             document.getElementById('successMessage').style.display = 'none';
         }
-
-        $(document).on('submit', '#play_matka_form', function(e) {
-            e.preventDefault();
-
-            let form = $(this);
-            let formData = form.serialize();
-
-            $.ajax({
-                url: '{{ route('handleMatkaBet') }}',
-                method: 'POST',
-                data: formData,
-                success: function(response) {
-                    if (response.success) {
-                        form[0].reset();
-                        $('#successMessage').show();
-                    } else {
-                        alert(response.message || 'Failed to submit bet.');
-                    }
-                },
-                error: function(xhr) {
-                    console.error(xhr.responseText);
-                    alert('Server error. Please try again.');
-                }
-            });
-        });
     </script>
 @endpush

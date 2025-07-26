@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Market;
 use App\Models\MatkaBet;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,6 +19,20 @@ class MatkaBetsController extends Controller
             'bet_number' => 'required|string|max:10',
             'transaction_id' => 'required|string|max:100|unique:matka_bets,transaction_id'
         ]);
+
+        $market = Market::findOrFail($validated['market_id']);
+        $now = Carbon::now()->format('H:i:s');
+
+        if (
+            $market->status != 1 ||
+            $market->start_time > $now ||
+            $market->end_time < $now
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Betting is closed for this market at this time.'
+            ]);
+        }
 
         $validated['user_id'] = Auth::id();
 

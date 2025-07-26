@@ -18,19 +18,13 @@
                     <thead>
                         <tr>
                             <th>
-                                <h6 class="text-sm text-medium">Name</h6>
+                                <h6 class="text-sm text-medium">Message</h6>
                             </th>
                             <th>
-                                <h6 class="text-sm text-medium">Action</h6>
+                                <h6 class="text-sm text-medium">Start Time</h6>
                             </th>
                             <th>
-                                <h6 class="text-sm text-medium">Item</h6>
-                            </th>
-                            <th>
-                                <h6 class="text-sm text-medium">Location</h6>
-                            </th>
-                            <th>
-                                <h6 class="text-sm text-medium">Status</h6>
+                                <h6 class="text-sm text-medium">End Time</h6>
                             </th>
                             <th class="text-end">
                                 <h6 class="text-sm text-medium">Actions</h6>
@@ -41,21 +35,13 @@
                         @forelse ($notifications as $notification)
                             <tr>
                                 <td>
-                                    <p class="text-sm">{{ $notification->name }}</p>
+                                    <p class="text-sm">{{ $notification->message }}</p>
                                 </td>
                                 <td>
-                                    <p class="text-sm">{{ $notification->message_part_1 }}</p>
+                                    <p class="text-sm">{{ $notification->start_time ?? '—' }}</p>
                                 </td>
                                 <td>
-                                    <p class="text-sm">{{ $notification->message_part_2 }}</p>
-                                </td>
-                                <td>
-                                    <p class="text-sm">{{ $notification->location ?? '—' }}</p>
-                                </td>
-                                <td>
-                                    <span class="status-btn {{ $notification->active ? 'success-btn' : 'close-btn' }}">
-                                        {{ $notification->active ? 'Active' : 'Inactive' }}
-                                    </span>
+                                    <p class="text-sm">{{ $notification->end_time ?? '—' }}</p>
                                 </td>
                                 <td>
                                     <div class="action justify-content-end">
@@ -74,8 +60,7 @@
                                         <ul class="dropdown-menu dropdown-menu-end"
                                             aria-labelledby="moreAction{{ $notification->id }}">
                                             <li class="dropdown-item">
-                                                <form
-                                                    action="{{ route('admin.notifications.destroy', $notification->id) }}"
+                                                <form action="{{ route('admin.notifications.destroy', $notification->id) }}"
                                                     method="post"
                                                     onsubmit="return confirm('Are you sure you want to delete this notification?');">
                                                     @csrf
@@ -94,7 +79,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6">
+                                <td colspan="4">
                                     <p class="text-center text-sm text-gray-500">No notifications found.</p>
                                 </td>
                             </tr>

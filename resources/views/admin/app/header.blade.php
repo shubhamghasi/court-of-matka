@@ -16,7 +16,12 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-7 col-md-7 col-6">
+            <div class="col-lg-2 d-none d-lg-block">
+                <div class="right">
+                    Time: <strong id="currentTime">--:--:--</strong>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-7 col-6">
                 <div class="header-right">
                     <!-- notification start -->
                     <div class="notification-box ml-15 d-none d-md-flex">

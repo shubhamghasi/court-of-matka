@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class NotificationController extends Controller
 {
@@ -23,19 +23,15 @@ class NotificationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:100',
-            'message_part_1' => 'required|string|max:100',
-            'message_part_2' => 'required|string|max:100',
-            'location' => 'nullable|string|max:100',
-            'active' => 'required|in:0,1',
+            'message' => 'required|string',
+            'start_time' => 'nullable|date_format:H:i',
+            'end_time' => 'nullable|date_format:H:i',
         ]);
 
         Notification::create([
-            'name' => $request->name,
-            'message_part_1' => $request->message_part_1,
-            'message_part_2' => $request->message_part_2,
-            'location' => $request->location,
-            'active' => $request->active,
+            'message' => $request->message,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
         ]);
 
         return redirect()->route('admin.notifications.index')->with('success', 'Notification created');
@@ -50,19 +46,16 @@ class NotificationController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|string|max:100',
-            'message_part_1' => 'required|string|max:100',
-            'message_part_2' => 'required|string|max:100',
-            'location' => 'nullable|string|max:100',
-            'active' => 'required|in:0,1',
+            'message' => 'required|string',
+            'start_time' => 'nullable|date_format:H:i',
+            'end_time' => 'nullable|date_format:H:i',
         ]);
+
         $notification = Notification::findOrFail($id);
         $notification->update([
-            'name' => $request->name,
-            'message_part_1' => $request->message_part_1,
-            'message_part_2' => $request->message_part_2,
-            'location' => $request->location,
-            'active' => $request->active,
+            'message' => $request->message,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
         ]);
 
         return redirect()->route('admin.notifications.index')->with('success', 'Notification updated');
@@ -76,13 +69,10 @@ class NotificationController extends Controller
 
     public function getNotifications(): JsonResponse
     {
-        $notifications = Notification::where('active', true)->get(['name', 'message_part_1', 'message_part_2', 'location']);
+        $notifications = Notification::latest()->get(['message', 'start_time', 'end_time']);
 
         return response()->json([
-            'names' => $notifications->pluck('name')->unique()->values(),
-            'actions' => $notifications->pluck('message_part_1')->unique()->values(),
-            'items' => $notifications->pluck('message_part_2')->unique()->values(),
-            'locations' => $notifications->pluck('location')->filter()->unique()->values(),
+            'notifications' => $notifications
         ]);
     }
 }

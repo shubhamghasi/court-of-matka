@@ -13,39 +13,18 @@
             @endif
 
             <div class="input-style-1">
-                <label>Name</label>
-                <input type="text" name="name" required placeholder="e.g., Shubham"
-                    value="{{ old('name', $notification?->name) }}">
+                <label>Message</label>
+                <textarea name="message" rows="3" required placeholder="Enter notification message">{{ old('message', $notification?->message) }}</textarea>
             </div>
 
             <div class="input-style-1">
-                <label>Message Part 1 (Action)</label>
-                <input type="text" name="message_part_1" required placeholder="e.g., bought"
-                    value="{{ old('message_part_1', $notification?->message_part_1) }}">
+                <label>Start Time</label>
+                <input type="time" name="start_time" value="{{ old('start_time', $notification?->start_time) }}">
             </div>
 
             <div class="input-style-1">
-                <label>Message Part 2 (What was bought)</label>
-                <input type="text" name="message_part_2" required placeholder="e.g., new product 1"
-                    value="{{ old('message_part_2', $notification?->message_part_2) }}">
-            </div>
-
-            <div class="input-style-1">
-                <label>Location</label>
-                <input type="text" name="location" placeholder="e.g., Mumbai"
-                    value="{{ old('location', $notification?->location) }}">
-            </div>
-
-            <div class="select-style-1">
-                <label>Status</label>
-                <div class="select-position">
-                    <select name="active" required>
-                        <option value="1" {{ old('active', $notification?->active) == 1 ? 'selected' : '' }}>Active
-                        </option>
-                        <option value="0" {{ old('active', $notification?->active) == 0 ? 'selected' : '' }}>Inactive
-                        </option>
-                    </select>
-                </div>
+                <label>End Time</label>
+                <input type="time" name="end_time" value="{{ old('end_time', $notification?->end_time) }}">
             </div>
 
             <button class="main-btn primary-btn btn-hover mt-3">

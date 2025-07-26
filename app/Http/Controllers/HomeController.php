@@ -7,6 +7,7 @@ use App\Models\NumberType;
 use App\Models\Option;
 use App\Models\Refund;
 use App\Models\Trend;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,7 +18,12 @@ class HomeController extends Controller
     {
         //
         $user_id = Auth::user()->id;
-        $marketsCollection = Market::where('status', 1)->get();
+        $now = Carbon::now()->format('H:i:s');
+
+        $marketsCollection = Market::where('status', 1)
+            ->where('start_time', '<=', $now)
+            ->where('end_time', '>=', $now)
+            ->get();
         $userPredictionsCollection = Trend::where('user_id', $user_id)->whereNotNull('predicted_numbers')->get();
         $refundCollection = Refund::where('user_id', $user_id)->get();
         $numberTypes = NumberType::get();
