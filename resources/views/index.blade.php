@@ -51,15 +51,6 @@
             return array[Math.floor(Math.random() * array.length)];
         }
 
-        function showNotification(msg) {
-            const box = $('#floating-notification');
-            box.hide().html(msg).fadeIn();
-
-            setTimeout(() => {
-                box.fadeOut();
-            }, 5000); // show for 5 seconds
-        }
-
         function isWithinTime(start, end) {
             const now = new Date();
             const nowSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
@@ -70,7 +61,6 @@
             const startSeconds = startH * 3600 + startM * 60 + startS;
             const endSeconds = endH * 3600 + endM * 60 + endS;
 
-            // Handles normal and overnight time windows
             if (startSeconds <= endSeconds) {
                 return nowSeconds >= startSeconds && nowSeconds <= endSeconds;
             } else {
@@ -84,32 +74,26 @@
 
                 if (!notifications.length) return;
 
-                function scheduleNotification() {
-                    // At the moment of displaying, filter again by time
+                function rotateMarquee() {
                     const validNow = notifications.filter(n =>
                         isWithinTime(n.start_time, n.end_time)
                     );
 
                     if (!validNow.length) {
-                        // If nothing valid right now, check again in 30s
-                        setTimeout(scheduleNotification, 30000);
+                        // Try again later if nothing valid now
+                        setTimeout(rotateMarquee, 30000);
                         return;
                     }
 
                     const notif = getRandom(validNow);
-                    const message = `
-                    <i style="color:#ffd43b;" class="fa-solid fa-bell"></i>
-                    <span style="color: #000;">${notif.message}</span>
-                `;
-
-                    showNotification(message);
+                    $('#marquee-text').html(`📢 ${notif.message}`);
 
                     const delay = Math.floor(Math.random() * 5000) + 25000; // 25–30 sec
-                    setTimeout(scheduleNotification, delay);
+                    setTimeout(rotateMarquee, delay);
                 }
 
-                // Start after initial delay
-                setTimeout(scheduleNotification, 10000);
+                // Initial start after 5 sec
+                setTimeout(rotateMarquee, 5000);
             });
         });
     </script>

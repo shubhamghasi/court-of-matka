@@ -20,6 +20,19 @@
 </head>
 
 <body class="min-h-screen">
+    <div id="top-marquee-bar" class="bg-yellow-300 py-2 px-4 text-sm font-medium text-yellow-900">
+        <marquee id="marquee-text" behavior="scroll" direction="left" scrollamount="5">
+            📢 Welcome to Elect2Victory! Don’t forget to check today's top predictions and earn extra rewards.
+        </marquee>
+    </div>
+
+    <!-- 🔷 Fixed Message Strip (Blue Background) -->
+    <div class="bg-blue-500 text-white text-sm font-medium py-2 px-4 flex justify-between items-center">
+        <span>
+           🔔 {{ $options['top_baner_text'] ?? 'Reminder: Your wallet balance must be sufficient before placing a vote.' }}
+
+        </span>
+    </div>
     <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3"></div>
     @include('partials.header_footer.header')
     @yield('content')

@@ -56,9 +56,13 @@
                             </div>
                             <div class="mb-3">
                                 <label for="whatsapp_number" class="form-label">WhatsApp Number</label>
-                                <input type="number" class="form-control" name="whatsapp_number"
-                                    id="whatsapp_number"
+                                <input type="number" class="form-control" name="whatsapp_number" id="whatsapp_number"
                                     value="{{ old('whatsapp_number', $options['whatsapp_number'] ?? '') }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="top_baner_text" class="form-label">Top Banner Text</label>
+                                <input type="text" class="form-control" name="top_baner_text" id="top_baner_text"
+                                    value="{{ old('top_baner_text', $options['top_baner_text'] ?? 'Reminder: Your wallet balance must be sufficient before placing a vote.') }}">
                             </div>
 
                             <div class="text-end">
