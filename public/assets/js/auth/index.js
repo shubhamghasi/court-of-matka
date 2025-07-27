@@ -12,6 +12,12 @@ function validateAuthForm(type = "signup") {
             name: {
                 required: type === "signup",
             },
+            phone: {
+                required: type === "signup",
+                digits: true,
+                minlength: 10,
+                maxlength: 10,
+            },
             agreed_terms: {
                 required: type === "signup",
             },
@@ -23,6 +29,12 @@ function validateAuthForm(type = "signup") {
                 minlength: "Password must be at least 6 characters.",
             },
             name: "Please enter your full name.",
+            phone: {
+                required: "Phone number is required.",
+                digits: "Phone number must contain only digits.",
+                minlength: "Phone number must be 10 digits.",
+                maxlength: "Phone number must be 10 digits.",
+            },
             agreed_terms: "You must agree to the terms.",
         },
         errorElement: "label",
@@ -127,14 +139,12 @@ $(document).on("submit", "#otp_verification_form", function (e) {
         },
         success: function (response) {
             $.unblockUI();
-            if (response.success) {
-                showToast("success", "OTP verified successfully!");
-                setTimeout(
-                    () => (window.location.href = response.redirect || "/"),
-                    1000
-                );
+            if (response.redirect) {
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 3000);
             } else {
-                showToast("error", response.message || "Invalid OTP.");
+                window.location.href = "/";
             }
         },
         error: function () {
@@ -167,4 +177,3 @@ function validateOtpForm() {
         validClass: "text-green-600",
     });
 }
-

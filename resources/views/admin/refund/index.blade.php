@@ -19,6 +19,9 @@
                                 <h6 class="text-sm text-medium">Name</h6>
                             </th>
                             <th>
+                                <h6 class="text-sm text-medium">Phone</h6>
+                            </th>
+                            <th>
                                 <h6 class="text-sm text-medium">Market Name</h6>
                             </th>
                             <th>
@@ -40,6 +43,9 @@
                                 </td>
                                 <td>
                                     <p class="text-sm">{{ $refund->user?->name }}</p>
+                                </td>
+                                <td>
+                                    <p class="text-sm">{{ $refund->user?->phone ?? 'N/A' }}</p>
                                 </td>
                                 <td>
                                     <p class="text-sm">{{ $refund->market_name }}</p>

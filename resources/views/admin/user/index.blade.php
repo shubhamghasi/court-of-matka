@@ -19,6 +19,9 @@
                                 <h6 class="text-sm text-medium">User Name</h6>
                             </th>
                             <th>
+                                <h6 class="text-sm text-medium">Phone</h6>
+                            </th>
+                            <th>
                                 <h6 class="text-sm text-medium">Email</h6>
                             </th>
                             <th>
@@ -49,10 +52,15 @@
                                     <p class="text-sm">{{ $user->name }}</p>
                                 </td>
                                 <td>
+                                    <p class="text-sm">{{ $user->phone ?? 'N/A' }}</p>
+                                </td>
+                                <td>
                                     <p class="text-sm">{{ $user->email }}</p>
                                 </td>
                                 <td>
-                                    <p class=" text-center status-btn {{ $user->email_verified_at ? "success-btn" : "danger-btn text-white" }}">{{ $user->email_verified_at ? "Verified" : "Not Verified" }}</p>
+                                    <p
+                                        class=" text-center status-btn {{ $user->email_verified_at ? 'success-btn' : 'danger-btn text-white' }}">
+                                        {{ $user->email_verified_at ? 'Verified' : 'Not Verified' }}</p>
                                 </td>
                                 <td>
                                     <div class="action justify-content-end">

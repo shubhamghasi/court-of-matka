@@ -20,6 +20,9 @@
                             <th>
                                 <h6 class="text-sm text-medium">Name</h6>
                             </th>
+                            <th>
+                                <h6 class="text-sm text-medium">Phone</h6>
+                            </th>
                             <th class="min-width">
                                 <h6 class="text-sm text-medium">Market Name</h6>
                             </th>
@@ -48,6 +51,9 @@
                                 </td>
                                 <td>
                                     <p class="text-sm">{{ $trendRequest->user?->name }}</p>
+                                </td>
+                                <td>
+                                    <p class="text-sm">{{ $trendRequest->user?->phone ?? 'N/A' }}</p>
                                 </td>
                                 <td>
                                     <p class="text-sm">{{ $trendRequest->market->name }}</p>

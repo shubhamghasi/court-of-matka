@@ -14,6 +14,15 @@
                 placeholder="John Doe" required>
         </div>
 
+        <!-- Phone -->
+        <div>
+            <label for="signup-phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+            <input type="tel" id="signup-phone" name="phone"
+                class="form-input w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+                placeholder="Enter your phone number" required pattern="[0-9]{10}">
+        </div>
+
+
         <!-- Email -->
         <div>
             <label for="signup-email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
@@ -31,10 +40,11 @@
         </div>
         <!-- Confirm Password -->
         <div>
-            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Confirm
+                Password</label>
             <input type="password" id="password_confirmation"
-                class="form-input w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none" name="password_confirmation"
-                placeholder="••••••••" required minlength="6">
+                class="form-input w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+                name="password_confirmation" placeholder="••••••••" required minlength="6">
         </div>
 
         <!-- Terms -->

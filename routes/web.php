@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\RefundController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DoubtCheckController;
+use App\Http\Controllers\EmailTestController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MatkaBetsController;
 use App\Http\Controllers\PredictionController;
@@ -15,6 +16,9 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TypeController;
 use App\Models\NumberAmount;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/test-email', [EmailTestController::class, 'showForm'])->name('email.form');
+Route::post('/test-email', [EmailTestController::class, 'send'])->name('email.send');
 
 Route::match(['get', 'post'], '/verify-otp', [AuthController::class, 'verifyOtp'])->name('validate-otp');
 Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->name('resend-otp');

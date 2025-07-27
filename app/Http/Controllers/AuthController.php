@@ -28,7 +28,8 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'           => 'required|string|max:255',
-            'email'          => 'required|email',
+            'email'          => 'required|email|unique:users,email',
+            'phone'          => 'required|digits:10|unique:users,phone',
             'password'       => 'required|min:6|confirmed',
             'agreed_terms'   => 'required|in:1'
         ]);
@@ -40,19 +41,21 @@ class AuthController extends Controller
             ], 422);
         }
 
-        // Create user
         $verificationCode = rand(100000, 999999);
+
         $user = User::create([
-            'name'           => $request->name,
-            'email'          => $request->email,
-            'password'       => Hash::make($request->password),
-            'agreed_terms'   => true,
+            'name'              => $request->name,
+            'email'             => $request->email,
+            'phone'             => $request->phone,
+            'password'          => Hash::make($request->password),
+            'agreed_terms'      => true,
             'verification_code' => $verificationCode
         ]);
+
         Auth::login($user);
+
         Mail::to($user->email)->send(new VerificationEmail($user, "#", $verificationCode));
         Log::info("Verification email sent to {$user->email} with code {$verificationCode}");
-
 
         return response()->json([
             'success' => true,

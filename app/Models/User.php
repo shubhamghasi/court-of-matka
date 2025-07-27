@@ -27,7 +27,8 @@ class User extends Authenticatable
         'verification_code',
         'agreed_terms',
         'remember_token',
-        'role'
+        'role',
+        'phone'
     ];
 
     /**
