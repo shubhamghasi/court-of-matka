@@ -30,7 +30,18 @@
                             @endforeach
                         </select>
                     </div>
-
+                    <div>
+                        <label for="number_type_id" class="block text-sm font-medium text-gray-700 mb-1">Number
+                            Type</label>
+                        <select id="number_type_id" name="number_type_id"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            required>
+                            <option value="" disabled selected>Select type</option>
+                            @foreach ($numberTypes as $type)
+                                <option value="{{ $type->id }}">{{ ucfirst($type->name) }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div>
                         <label for="number" class="block text-sm font-medium text-gray-700 mb-1">Enter Number</label>
                         <input type="text" id="number" name="bet_number"

@@ -87,7 +87,7 @@
             font-size: 10px;
             min-width: 18px;
             height: 18px;
-            border-radius: 9px;
+            border-radius: 9999px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -113,10 +113,7 @@
                     @php
                         $predictions = json_decode($trendRequest->predicted_numbers, true) ?? [];
                         $minPercentage = collect($predictions)->min('percentage');
-                        $lowestItems = collect($predictions)
-                            ->filter(fn($item) => $item['percentage'] == $minPercentage)
-                            ->values();
-
+                        $lowestItems = collect($predictions)->where('percentage', $minPercentage)->values();
                         $highlightedNumber = $lowestItems->isNotEmpty() ? $lowestItems->random()['number'] : null;
                     @endphp
 
@@ -129,30 +126,26 @@
                                         class="inline-flex items-center justify-center w-6 h-6 bg-purple text-white text-xs font-bold rounded-full mr-2">
                                         #{{ $loop->iteration }}
                                     </span>
-                                    <h3 class="text-lg font-semibold text-gray-900">
-                                        Top Numbers having the opportunity
+                                    <h3 class="text-lg font-semibold text-gray-900">Top Numbers having the opportunity
                                     </h3>
                                 </div>
-                                <div class="flex items-center">
-                                    <span class="text-xs text-gray-500">
-                                        {{ $trendRequest->created_at->format('d M Y, h:i A') }}
-                                    </span>
-                                </div>
+                                <span class="text-xs text-gray-500">
+                                    {{ $trendRequest->created_at->format('d M Y, h:i A') }}
+                                </span>
                             </div>
 
                             <textarea class="w-full p-3 bg-purple-50 text-gray-700 rounded-lg border-0 mb-4" rows="2" readonly>
 Current betting distribution across numbers. The number(s) with the lowest percentage of bets are highlighted in green.
                             </textarea>
+
                             <div class="grid grid-cols-5 gap-3 md:grid-cols-10">
                                 @foreach ($predictions as $item)
                                     @php
                                         $isLowest = $item['percentage'] == $minPercentage;
                                         $isLightest = $isLowest && $item['number'] == $highlightedNumber;
                                     @endphp
-
                                     <div
-                                        class="number-badge relative flex flex-col items-center justify-center p-2 rounded-lg
-                                        {{ $isLightest ? 'bg-green-100' : ($isLowest ? 'bg-green-300' : 'bg-gray-100') }}">
+                                        class="number-badge relative flex flex-col items-center justify-center p-2 rounded-lg {{ $isLightest ? 'bg-green-100' : ($isLowest ? 'bg-green-300' : 'bg-gray-100') }}">
                                         <span
                                             class="order-badge {{ $isLowest ? 'bg-green-700' : 'bg-purple-dark' }} text-white">
                                             {{ $item['number'] }}
@@ -186,13 +179,60 @@ Current betting distribution across numbers. The number(s) with the lowest perce
                         </div>
                     </div>
                 @empty
-                    <div class="text-center text-gray-500 mt-10">
-                        No prediction notifications yet.
-                    </div>
+                    <div class="text-center text-gray-500 mt-10">No prediction notifications yet.</div>
                 @endforelse
+
+                @if ($doubtChecks->isNotEmpty())
+                    <div class="mt-12 border-t pt-6">
+                        <h2 class="text-xl font-semibold text-purple-darker mb-4">Doubt Check Predictions</h2>
+
+                        @foreach ($doubtChecks as $doubt)
+                            <div
+                                class="notification-item bg-white rounded-xl shadow-sm overflow-hidden border-l-4 border-green">
+                                <div class="p-4">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <div class="flex items-center">
+                                            <span
+                                                class="inline-flex items-center justify-center w-6 h-6 bg-green text-white text-xs font-bold rounded-full mr-2">
+                                                #{{ $loop->iteration }}
+                                            </span>
+                                            <h3 class="text-lg font-semibold text-gray-900">Doubt Prediction Review</h3>
+                                        </div>
+                                        <span class="text-xs text-gray-500">
+                                            {{ $doubt->created_at->format('d M Y, h:i A') }}
+                                        </span>
+                                    </div>
+
+                                    <textarea class="w-full p-3 bg-green-50 text-gray-700 rounded-lg border-0 mb-4" rows="2" readonly>
+Number: {{ $doubt->number }} | Market: {{ $doubt->market?->name }} | Type: {{ $doubt->numberType?->name }}
+Accuracy: {{ $doubt->accuracy ?? '70%' }}%
+                                    </textarea>
+
+                                    <div class="flex justify-between items-center">
+                                        <div class="flex items-center">
+                                            <div class="w-4 h-4 bg-green-200 rounded-full mr-2"></div>
+                                            <span class="text-sm text-gray-600">Review this prediction before sending to
+                                                user</span>
+                                        </div>
+
+                                        @if (!$doubt->is_read)
+                                            <button onclick="markDoubtAsRead({{ $doubt->id }})"
+                                                class="text-sm font-medium text-green-600 hover:text-green-800 transition-colors">
+                                                Mark as Read
+                                            </button>
+                                        @else
+                                            <span class="text-sm text-gray-400">Read</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </div>
     </div>
+
     <script>
         function markAsRead(id) {
             fetch(`/notifications/${id}/mark-as-read`, {
@@ -206,7 +246,26 @@ Current betting distribution across numbers. The number(s) with the lowest perce
                 .then(response => response.json())
                 .then(data => {
                     if (data.status) {
-                        location.reload(); // reload to reflect UI change
+                        location.reload();
+                    } else {
+                        alert('Something went wrong');
+                    }
+                });
+        }
+
+        function markDoubtAsRead(id) {
+            fetch(`/notifications/doubt/${id}/mark-as-read`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status) {
+                        location.reload();
                     } else {
                         alert('Something went wrong');
                     }

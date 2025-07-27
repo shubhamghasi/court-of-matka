@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\DoubtCheck;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -81,7 +82,7 @@ class NotificationController extends Controller
     {
         $userId = Auth::user()->id;
 
-        // Get all unread trend notifications for the user
+        // Trend-based notifications
         $trendNotifications = \App\Models\Trend::with(['market', 'type'])
             ->where('user_id', $userId)
             ->whereNotNull('predicted_numbers')
@@ -89,10 +90,17 @@ class NotificationController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        // Optional: Count of unread notifications
-        $unreadCount = $trendNotifications->count();
+        // Doubt check notifications (admin-generated predictions)
+        $doubtChecks = \App\Models\DoubtCheck::with(['market', 'numberType'])
+            ->where('user_id', $userId)
+            ->whereNotNull('accuracy')
+            // ->where('is_read', false)
+            ->orderByDesc('created_at')
+            ->get();
 
-        return view('notifications.index', compact('trendNotifications', 'unreadCount'));
+        $unreadCount = $trendNotifications->count() + $doubtChecks->count();
+
+        return view('notifications.index', compact('trendNotifications', 'doubtChecks', 'unreadCount'));
     }
 
     public function markAsRead($id)
@@ -105,5 +113,20 @@ class NotificationController extends Controller
         $trend->save();
 
         return response()->json(['status' => true, 'message' => 'Marked as read']);
+    }
+
+    public function markDoubtAsRead($id): JsonResponse
+    {
+        $doubt = DoubtCheck::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $doubt->is_read = true;
+        $doubt->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Doubt marked as read.'
+        ]);
     }
 }

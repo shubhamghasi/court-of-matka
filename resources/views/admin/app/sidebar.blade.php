@@ -94,6 +94,24 @@
                             class="{{ $route === 'admin.trends' ? 'active' : '' }}">Requests</a></li>
                 </ul>
             </li>
+            {{-- Doubt Check --}}
+            @php $isDoubt = Route::is('admin.doubt.index'); @endphp
+            <li class="nav-item nav-item-has-children">
+                <a href="#0" data-bs-toggle="collapse" data-bs-target="#doubt_check_nav"
+                    aria-controls="doubt_check_nav" aria-expanded="{{ $isDoubt ? 'true' : 'false' }}"
+                    aria-label="Toggle navigation">
+                    <span class="icon"><span class="mdi mdi-comment-question-outline"></span></span>
+                    <span class="text">Doubt Checks</span>
+                </a>
+                <ul id="doubt_check_nav" class="dropdown-nav {{ $isDoubt ? 'show' : 'collapse' }}">
+                    <li>
+                        <a href="{{ route('admin.doubt.index') }}"
+                            class="{{ $route === 'admin.doubt.index' ? 'active' : '' }}">
+                            Requests
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
             {{-- Refunds --}}
             @php $isRefunds = Route::is('admin.refunds'); @endphp

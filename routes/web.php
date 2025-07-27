@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\NumberAmountController;
 use App\Http\Controllers\Admin\RefundController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DoubtCheckController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MatkaBetsController;
 use App\Http\Controllers\PredictionController;
@@ -35,6 +36,8 @@ Route::middleware(['auth', 'validated_email'])->group(function () {
     Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])
         ->name('notifications.markAsRead');
     Route::post('/doubt-check/submit', [PredictionController::class, 'submitDoubt'])->name('doubt.check.submit');
+    Route::post('/notifications/doubt/{id}/mark-as-read', [NotificationController::class, 'markDoubtAsRead'])
+        ->name('notifications.doubt.markAsRead');
 });
 
 
@@ -61,6 +64,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('settings', [SettingsController::class, 'edit'])->name('admin.settings.edit');
     Route::post('settings', [SettingsController::class, 'update'])->name('admin.settings.update');
     Route::resource('notifications', NotificationController::class)->names('admin.notifications');
+    Route::resource('doubt-check', DoubtCheckController::class)->names('admin.doubt');
+    Route::post('doubt-check/resolve/{id}', [DoubtCheckController::class, 'markAsResolved'])->name('admin.doubt.mark-resolved');
+    Route::post('analyze/{id}', [DoubtCheckController::class, 'analyze'])->name('admin.doubt.analyze');
+    Route::post('doubt/send-result/{id}', [DoubtCheckController::class, 'sendResult'])->name('admin.doubt.send-result');
 });
 
 Route::get('/notifications/data', [NotificationController::class, 'getNotifications'])->name('notifications.json');

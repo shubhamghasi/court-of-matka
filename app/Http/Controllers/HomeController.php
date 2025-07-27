@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DoubtCheck;
 use App\Models\Market;
 use App\Models\NumberType;
 use App\Models\Option;
@@ -29,11 +30,19 @@ class HomeController extends Controller
         $numberTypes = NumberType::get();
         $options = Option::pluck('option_value', 'option_name')->toArray();
 
-
-        $unreadNotificationCount = Trend::where('user_id', $user_id)
+        $unreadTrendCount = Trend::where('user_id', $user_id)
             ->whereNotNull('predicted_numbers')
             ->where('is_read', false)
             ->count();
+
+        $unreadDoubtCheckCount = DoubtCheck::where('user_id', $user_id)
+            ->whereNotNull('accuracy')
+            ->where('is_read', false) // Assuming you have an `is_read` column
+            ->where('status', '!=', 'resolved')
+            ->count();
+
+        $unreadNotificationCount = $unreadTrendCount + $unreadDoubtCheckCount;
+
 
         return view('index', compact(
             'marketsCollection',
