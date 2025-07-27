@@ -8,7 +8,7 @@
 
         @include('partials.home.betting_trend')
 
-        {{-- @include('partials.home.doubt_check') --}}
+        @include('partials.home.doubt_check')
 
         @include('partials.home.secure_bet')
         <div id="floating-notification"

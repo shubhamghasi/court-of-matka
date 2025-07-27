@@ -22,7 +22,6 @@
 <body class="min-h-screen">
     <div id="top-marquee-bar" class="bg-yellow-300 py-2 px-4 text-sm font-medium text-yellow-900">
         <marquee id="marquee-text" behavior="scroll" direction="left" scrollamount="5">
-            📢 Welcome to Elect2Victory! Don’t forget to check today's top predictions and earn extra rewards.
         </marquee>
     </div>
 

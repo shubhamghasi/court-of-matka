@@ -24,10 +24,13 @@ class TypeController extends Controller
         $request->validate([
             'name' => 'required',
         ]);
-        $type = new NumberType();
-        $type->create([
-            'name' => strtolower($request->name),
+
+        $formattedName = strtolower(str_replace(' ', '_', trim($request->name)));
+
+        NumberType::create([
+            'name' => $formattedName,
         ]);
+
         return redirect()->route('admin.number.type.index');
     }
 
@@ -39,14 +42,18 @@ class TypeController extends Controller
 
     public function update($id, Request $request)
     {
-        // dd($id, $request->all());
-        $type = NumberType::where('id', $id)->first();
+        $type = NumberType::findOrFail($id);
+
         $request->validate([
             'name' => 'required',
         ]);
+
+        $formattedName = strtolower(str_replace(' ', '_', trim($request->name)));
+
         $type->update([
-            'name' => strtolower($request->name),
+            'name' => $formattedName,
         ]);
+
         return redirect()->route('admin.number.type.index');
     }
 

@@ -34,6 +34,7 @@ Route::middleware(['auth', 'validated_email'])->group(function () {
     Route::get('/notifications', [NotificationController::class, 'getAllNotificationOfUser'])->name('getAllNotificationOfUser');
     Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])
         ->name('notifications.markAsRead');
+    Route::post('/doubt-check/submit', [PredictionController::class, 'submitDoubt'])->name('doubt.check.submit');
 });
 
 

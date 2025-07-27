@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\PredictedNumberMail;
+use App\Models\DoubtCheck;
 use App\Models\Market;
 use App\Models\NumberType;
 use Illuminate\Http\Request;
@@ -179,5 +180,25 @@ class PredictionController extends Controller
         Mail::to($trend->user->email)->send(new PredictedNumberMail($trend->user, $trend->predicted_numbers));
 
         return redirect()->back()->with('success', 'Predicted number sent to user.');
+    }
+    public function submitDoubt(Request $request)
+    {
+        $request->validate([
+            'market' => 'required|integer',
+            'number_type' => 'required|integer',
+            'number' => 'required|string|max:255',
+            'transactionId' => 'required|string|max:255',
+        ]);
+
+        DoubtCheck::create([
+            'user_id' => Auth::id(),
+            'market_id' => $request->market,
+            'number_type_id' => $request->number_type,
+            'number' => $request->number,
+            'transaction_id' => $request->transactionId,
+            'status' => 'pending',
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Your doubt request has been submitted.']);
     }
 }
