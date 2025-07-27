@@ -30,6 +30,9 @@
                             <th>
                                 <h6 class="text-sm text-medium">Transaction ID</h6>
                             </th>
+                            <th>
+                                <h6 class="text-sm text-medium">User UPI</h6>
+                            </th>
                             {{-- <th class="min-width">
                                 <h6 class="text-sm text-medium">
                                     Status
@@ -62,6 +65,9 @@
                                 </td>
                                 <td>
                                     <p class="text-sm">{{ $bet->transaction_id }}</p>
+                                </td>
+                                <td>
+                                    <p class="text-sm">{{ $bet->user_upi ?? 'N/A' }}</p>
                                 </td>
                             </tr>
                         @endforeach
