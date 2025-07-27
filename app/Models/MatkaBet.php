@@ -15,6 +15,7 @@ class MatkaBet extends Model
         'bet_amount',
         'transaction_id',
         'bet_number',
+        'number_type_id',
     ];
 
     public function user()
