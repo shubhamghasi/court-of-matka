@@ -42,7 +42,7 @@
 
         <!-- Footer -->
         <p class="text-center mt-6 text-sm text-gray-600">
-            © {{ date('Y') }} Court Of Matka. All rights reserved.
+            © {{ date('Y') }} {{ $options['app_name'] ?? 'Matka Minds' }}. All rights reserved.
         </p>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer=""></script>

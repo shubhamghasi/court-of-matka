@@ -29,6 +29,7 @@ class HomeController extends Controller
         $refundCollection = Refund::where('user_id', $user_id)->get();
         $numberTypes = NumberType::get();
         $options = Option::pluck('option_value', 'option_name')->toArray();
+        // dd($options);
 
         $unreadTrendCount = Trend::where('user_id', $user_id)
             ->whereNotNull('predicted_numbers')

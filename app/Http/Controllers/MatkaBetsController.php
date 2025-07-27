@@ -19,6 +19,7 @@ class MatkaBetsController extends Controller
             'bet_number' => 'required|string|max:10',
             'transaction_id' => 'required|string|max:100|unique:matka_bets,transaction_id',
             'number_type_id' => 'required',
+            'user_upi' => 'required',
         ]);
 
         $market = Market::findOrFail($validated['market_id']);

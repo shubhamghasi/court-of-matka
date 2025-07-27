@@ -17,16 +17,17 @@ class SettingsController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'app_name' => 'required|string|max:255',
+            'app_name' => 'nullable|string|max:255',
             'upi_id' => 'nullable|string|max:255',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
             'doubt_check_amount' => 'nullable|string',
             'trend_check_amount' => 'nullable|string',
             'whatsapp_number' => 'nullable|numeric',
+            'top_baner_text' => 'nullable|string',
         ]);
 
-        $data = $request->only(['app_name', 'upi_id', 'meta_title', 'meta_description', 'trend_check_amount', 'doubt_check_amount', 'whatsapp_number']);
+        $data = $request->only(['app_name', 'upi_id', 'meta_title', 'meta_description', 'trend_check_amount', 'doubt_check_amount', 'whatsapp_number', 'top_baner_text']);
 
         foreach ($data as $name => $value) {
             Option::updateOrCreate(
