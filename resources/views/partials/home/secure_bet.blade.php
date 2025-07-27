@@ -43,7 +43,14 @@
                             placeholder="Enter Bet Number" required>
                     </div>
                 </div>
-
+                <div>
+                    <label for="upi_address" class="block text-sm font-medium text-gray-700 mb-1">
+                        UPI Address for Refund
+                    </label>
+                    <input type="text" name="upi_address" id="upi_address"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        placeholder="Enter your UPI address" required>
+                </div>
                 <div class="flex justify-end">
                     <button type="submit"
                         class="gradient-bg text-white px-6 py-3 rounded-lg hover:opacity-90 transition flex items-center">

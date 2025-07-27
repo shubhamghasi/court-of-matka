@@ -28,6 +28,7 @@ class RefundController extends Controller
         $request->validate([
             'market_name' => 'required|string|max:255',
             'bet_number'  => 'required|string|max:50',
+            'upi_address' => 'required'
         ]);
 
         $refund = Refund::create([
@@ -35,6 +36,7 @@ class RefundController extends Controller
             'market_name' => $request->input('market_name'),
             'bet_number'  => $request->input('bet_number'),
             'status'      => 'pending',
+            'upi_address' => $request->upi_address,
         ]);
 
         if (!$refund) {
