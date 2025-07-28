@@ -13,30 +13,30 @@ class RefundController extends Controller
     //
     public function index()
     {
-        $refundsCollection = Refund::with('user')
+        $refundsCollection = Refund::with('user', 'market', 'numberType')
             ->whereNull('deleted_at')
             ->orderByDesc('created_at')
             ->paginate(20);
-
+        // dd($refundsCollection);
         return view('admin.refund.index', compact('refundsCollection'));
     }
 
     public function store(Request $request)
     {
-        $user_id = Auth::id();
-
         $request->validate([
-            'market_name' => 'required|string|max:255',
+            'market_id'   => 'required|exists:markets,id',
+            'number_type' => 'required|exists:number_types,id',
             'bet_number'  => 'required|string|max:50',
-            'upi_address' => 'required'
+            'upi_address' => 'required|string|max:255',
         ]);
 
         $refund = Refund::create([
-            'user_id'     => $user_id,
-            'market_name' => $request->input('market_name'),
-            'bet_number'  => $request->input('bet_number'),
-            'status'      => 'pending',
+            'user_id'     => Auth::id(),
+            'market_id'   => $request->market_id,
+            'number_type' => $request->number_type,
+            'bet_number'  => $request->bet_number,
             'upi_address' => $request->upi_address,
+            'status'      => 'pending',
         ]);
 
         if (!$refund) {

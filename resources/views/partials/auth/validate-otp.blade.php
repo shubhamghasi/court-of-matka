@@ -37,52 +37,72 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('assets/js/common.js') }}"></script>
+    <script src="{{ asset('assets/js/auth/index.js') }}"></script>
     <script>
         let countdown = 60;
+        let countdownInterval = null;
+
         const resendBtn = document.getElementById('resendOtpBtn');
         const countdownSpan = document.getElementById('resendCountdown');
 
         function startCountdown() {
-            resendBtn.disabled = true;
-            countdownSpan.textContent = `(${countdown}s)`;
+            // Clear existing interval if any
+            if (countdownInterval) clearInterval(countdownInterval);
 
-            const interval = setInterval(() => {
+            resendBtn.disabled = true;
+            updateCountdownText();
+
+            countdownInterval = setInterval(() => {
                 countdown--;
-                countdownSpan.textContent = `(${countdown}s)`;
+                updateCountdownText();
 
                 if (countdown <= 0) {
-                    clearInterval(interval);
+                    clearInterval(countdownInterval);
                     resendBtn.disabled = false;
                     countdownSpan.textContent = '';
-                    countdown = 60; // Reset for next time
+                    countdown = 60;
                 }
             }, 1000);
         }
 
-        function resendOtp() {
-            fetch("{{ route('resend-otp') }}", {
-                method: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({})
-            }).then(response => response.json())
-              .then(data => {
-                  if (data.success) {
-                      alert('OTP resent to your email!');
-                  } else {
-                      alert('Failed to resend OTP.');
-                  }
-              }).catch(() => {
-                  alert('Something went wrong.');
-              });
-
-            startCountdown();
+        function updateCountdownText() {
+            countdownSpan.textContent = `(${countdown}s)`;
         }
 
-        // Start countdown on page load
+        function resendOtp() {
+            resendBtn.disabled = true;
+            resendBtn.innerText = 'Sending...';
+
+            $.ajax({
+                url: "{{ route('resend-otp') }}",
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                beforeSend: function() {
+                    $.blockUI();
+                },
+                success: function(response) {
+                    $.unblockUI();
+                    resendBtn.innerText = 'Resend OTP';
+                    if (response.success) {
+                        showToast("success", response.message || "OTP resent successfully.");
+                    } else {
+                        showToast("error", response.message || "Failed to resend OTP.");
+                    }
+                },
+                error: function() {
+                    $.unblockUI();
+                    resendBtn.innerText = 'Resend OTP';
+                    showToast("error", "Server error. Please try again.");
+                },
+                complete: function() {
+                    startCountdown();
+                }
+            });
+        }
+
+        // Automatically start countdown when page loads
         window.addEventListener('DOMContentLoaded', startCountdown);
     </script>
 @endpush

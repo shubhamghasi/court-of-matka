@@ -119,7 +119,7 @@ function validateOtpInput(otp) {
     return /^\d{6}$/.test(otp);
 }
 
-$(document).on("submit", "#otp_verification_form", function (e) {
+$("#otp_verification_form").on("submit", function (e) {
     e.preventDefault();
     const otp = $("#otp").val().trim();
 
@@ -139,12 +139,13 @@ $(document).on("submit", "#otp_verification_form", function (e) {
         },
         success: function (response) {
             $.unblockUI();
-            if (response.redirect) {
+            if (response.success) {
+                showToast("success", "OTP verified successfully!");
                 setTimeout(() => {
                     window.location.href = "/";
-                }, 3000);
+                }, 1000); // Redirect after short delay
             } else {
-                window.location.href = "/";
+                showToast("error", response.message || "Invalid OTP.");
             }
         },
         error: function () {

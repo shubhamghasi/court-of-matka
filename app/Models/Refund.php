@@ -11,8 +11,10 @@ class Refund extends Model
 
     protected $fillable = [
         'user_id',
-        'market_name',   // simple string instead of market_id
+        'market_id',   // simple string instead of market_id
+        'number_type',
         'bet_number',
+        'upi_address',
         'status',        // optional: default status could be 'pending'
     ];
 
@@ -20,5 +22,13 @@ class Refund extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function market(){
+        return $this->belongsTo(Market::class);
+    }
+
+    public function numberType(){
+        return $this->belongsTo(NumberType::class, 'number_type');
     }
 }

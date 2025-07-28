@@ -64,7 +64,7 @@
                                 ID</label>
                             <div class="flex">
                                 <input type="text" id="doubt_check_upi" readonly
-                                    value="{{ $admin_upi_id ?? 'test@upi' }}"
+                                    value="{{ $options['upi_id'] ?? "demo@upi"}}"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-l-lg bg-gray-50 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                                 <button type="button" onclick="copyUPI()"
                                     class="bg-indigo-600 text-white px-4 py-2 rounded-r-lg hover:bg-indigo-700 transition">

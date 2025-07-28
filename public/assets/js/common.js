@@ -84,10 +84,12 @@ $(document).ready(function () {
     $("#refundForm").on("submit", function (e) {
         e.preventDefault();
 
-        const marketName = $("#market_name").val().trim();
+        const marketId = $("#refund-market").val();
+        const numberType = $("#refund_number_type").val();
         const betNumber = $("#bet_number").val().trim();
+        const upiAddress = $("#upi_address").val().trim();
 
-        if (!marketName || !betNumber) {
+        if (!marketId || !numberType || !betNumber || !upiAddress) {
             alert("Please fill in all required fields.");
             return;
         }
@@ -95,20 +97,29 @@ $(document).ready(function () {
         $.ajax({
             type: "POST",
             url: "/refunds/store",
+            headers: {
+                "X-CSRF-TOKEN": csrf_token,
+            },
             data: {
-                _token: csrf_token,
-                market_name: marketName,
+                market_id: marketId,
+                number_type: numberType,
                 bet_number: betNumber,
+                upi_address: upiAddress,
             },
             dataType: "json",
+            beforeSend: function () {
+                $.blockUI();
+            },
             success: function (response) {
+                $.unblockUI();
                 $("#refundSuccess")
                     .text(response.message)
                     .removeClass("hidden");
-                $("#whatsappInstruction").removeClass("hidden"); // Optional
+                $("#whatsappInstruction").removeClass("hidden");
                 $("#refundForm")[0].reset();
             },
             error: function (xhr) {
+                $.unblockUI();
                 let message = "An error occurred. Please try again.";
 
                 if (xhr.status === 422 && xhr.responseJSON?.errors) {

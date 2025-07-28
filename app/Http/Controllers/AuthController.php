@@ -77,7 +77,7 @@ class AuthController extends Controller
                 $user->email_verified_at = now();
                 $user->save();
 
-                return response()->json(['success' => true, 'redirect' => route('home')]);
+                return response()->json(['success' => true]);
             }
             return response()->json(['success' => false, 'message' => 'Invalid OTP']);
         }

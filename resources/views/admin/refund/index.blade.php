@@ -25,6 +25,9 @@
                                 <h6 class="text-sm text-medium">Market Name</h6>
                             </th>
                             <th>
+                                <h6 class="text-sm text-medium">Market Name</h6>
+                            </th>
+                            <th>
                                 <h6 class="text-sm text-medium">Bet Number</h6>
                             </th>
                             <th>
@@ -48,7 +51,10 @@
                                     <p class="text-sm">{{ $refund->user?->phone ?? 'N/A' }}</p>
                                 </td>
                                 <td>
-                                    <p class="text-sm">{{ $refund->market_name }}</p>
+                                    <p class="text-sm">{{ $refund->market?->name }}</p>
+                                </td>
+                                <td>
+                                    <p class="text-sm">{{ ucfirst($refund->numberType?->name) }}</p>
                                 </td>
                                 <td>
                                     <p class="text-sm">{{ $refund->bet_number }}</p>

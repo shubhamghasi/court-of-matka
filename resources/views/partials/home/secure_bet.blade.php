@@ -26,12 +26,27 @@
             <form id="refundForm" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
                     <div>
-                        <label for="market_name" class="block text-sm font-medium text-gray-700 mb-1">
-                            Market Name
-                        </label>
-                        <input type="text" name="market_name" id="market_name"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                            placeholder="Enter Market Name" required>
+                        <label for="refund-market" class="block text-sm font-medium text-gray-700 mb-1">Select Market
+                            1</label>
+                        <select name="market_id" id="refund-market"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="" disabled selected>Choose a market</option>
+                            @foreach ($marketsCollection as $market)
+                                <option value="{{ $market->id }}">{{ $market->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="refund_number_type" class="block text-sm font-medium text-gray-700 mb-1">Select Number
+                            Type</label>
+                        <select name="number_type" id="refund_number_type"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="" disabled selected>Choose Type</option>
+                            @foreach ($numberTypes as $type)
+                                <option value="{{ $type->id }}">{{ ucfirst($type->name) }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <div>
