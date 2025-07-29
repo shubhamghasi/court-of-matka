@@ -13,7 +13,7 @@
                             d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
-                <h2 class="text-2xl font-bold text-gray-800">Play Matka</h2>
+                <h2 class="text-2xl font-bold text-gray-800">{{ $options['play_matka_title'] ?? "Play Matka" }}</h2>
             </div>
 
             <form id="play_matka_form" class="space-y-6">

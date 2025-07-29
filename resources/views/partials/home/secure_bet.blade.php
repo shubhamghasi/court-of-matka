@@ -11,7 +11,7 @@
                         </path>
                     </svg>
                 </div>
-                <h2 class="text-2xl font-bold text-gray-800">Loss Refund</h2>
+                <h2 class="text-2xl font-bold text-gray-800">{{ $options['refund_title'] ?? "Refund Amount" }}</h2>
             </div>
 
             <div class="my-3">

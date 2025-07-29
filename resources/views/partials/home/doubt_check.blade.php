@@ -11,7 +11,7 @@
                         </path>
                     </svg>
                 </div>
-                <h2 class="text-2xl font-bold text-gray-800">Doubt Check</h2>
+                <h2 class="text-2xl font-bold text-gray-800">{{ $options['doubt_title'] ?? "Doubt Check" }}</h2>
             </div>
 
             <form id="doubt_check_form" onsubmit="submitDoubtForm(event)" class="space-y-6">

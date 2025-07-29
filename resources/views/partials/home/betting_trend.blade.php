@@ -11,7 +11,7 @@
                         </path>
                     </svg>
                 </div>
-                <h2 class="text-2xl font-bold text-gray-800">Check Trending Number</h2>
+                <h2 class="text-2xl font-bold text-gray-800">{{ $options['trends_title'] ?? "Check Trending Number" }}</h2>
             </div>
 
             <form id="trendsForm" class="space-y-6">
@@ -31,7 +31,8 @@
 
                     <!-- Market Select 2 -->
                     <div>
-                        <label for="number_type" class="block text-sm font-medium text-gray-700 mb-1">Select Number Type</label>
+                        <label for="number_type" class="block text-sm font-medium text-gray-700 mb-1">Select Number
+                            Type</label>
                         <select name="number_type" id="number_type"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                             <option value="" disabled selected>Choose Type</option>
@@ -49,14 +50,17 @@
                             <h3 class="text-lg font-semibold text-gray-800">Premium Insights</h3>
                             <p class="text-gray-600">Get detailed betting trends and analysis</p>
                         </div>
-                        <div class="text-2xl font-bold text-indigo-600">₹{{ !empty($options['trend_check_amount']) ? $options['trend_check_amount'] : '0.00' }}</div>
+                        <div class="text-2xl font-bold text-indigo-600">
+                            ₹{{ !empty($options['trend_check_amount']) ? $options['trend_check_amount'] : '0.00' }}
+                        </div>
                     </div>
 
                     <div class="space-y-4">
                         <div>
                             <label for="trends-upi" class="block text-sm font-medium text-gray-700 mb-1">UPI ID</label>
                             <div class="flex">
-                                <input type="text" id="trends-upi" readonly value="{{ $options['upi_id'] ?? "demo@upi"}}"
+                                <input type="text" id="trends-upi" readonly
+                                    value="{{ $options['upi_id'] ?? 'demo@upi' }}"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50">
                                 <button type="button" id="copyUPI"
                                     class="bg-indigo-600 text-white px-4 py-2 rounded-r-lg hover:bg-indigo-700 transition">

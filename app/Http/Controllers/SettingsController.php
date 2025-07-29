@@ -26,6 +26,10 @@ class SettingsController extends Controller
             'whatsapp_number' => 'nullable|numeric',
             'top_baner_text' => 'nullable|string',
             'google_search_console_tag' => 'nullable',
+            'refund_title' => 'string|nullable',
+            'play_matka_title' => 'string|nullable',
+            'doubt_title' => 'string|nullable',
+            'trends_title' => 'string|nullable'
         ]);
 
         $data = $request->only([
@@ -37,7 +41,11 @@ class SettingsController extends Controller
             'doubt_check_amount',
             'whatsapp_number',
             'top_baner_text',
-            'google_search_console_tag'
+            'google_search_console_tag',
+            'refund_title',
+            'play_matka_title',
+            'doubt_title',
+            'trends_title',
         ]);
 
         foreach ($data as $name => $value) {

@@ -31,6 +31,26 @@
                             </div>
 
                             <div class="mb-3">
+                                <label for="trends_title" class="form-label">Trends Title</label>
+                                <input type="text" class="form-control" name="trends_title" id="trends_title"
+                                    value="{{ old('trends_title', $options['trends_title'] ?? '') }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="doubt_title" class="form-label">Doubt Title</label>
+                                <input type="text" class="form-control" name="doubt_title" id="doubt_title"
+                                    value="{{ old('doubt_title', $options['doubt_title'] ?? '') }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="play_matka_title" class="form-label">Play Matka Title</label>
+                                <input type="text" class="form-control" name="play_matka_title" id="play_matka_title"
+                                    value="{{ old('play_matka_title', $options['play_matka_title'] ?? '') }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="refund_title" class="form-label">Refund Title</label>
+                                <input type="text" class="form-control" name="refund_title" id="refund_title"
+                                    value="{{ old('refund_title', $options['refund_title'] ?? '') }}">
+                            </div>
+                            <div class="mb-3">
                                 <label for="meta_title" class="form-label">Meta Title</label>
                                 <input type="text" class="form-control" name="meta_title" id="meta_title"
                                     value="{{ old('meta_title', $options['meta_title'] ?? '') }}">
