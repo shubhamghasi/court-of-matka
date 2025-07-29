@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
         integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    {!! $options['google_search_console_tag'] ?? "No Search Console Tag" !!}
     @stack('styles')
 </head>
 
@@ -28,7 +29,8 @@
     <!-- 🔷 Fixed Message Strip (Blue Background) -->
     <div class="bg-blue-500 text-white text-sm font-medium py-2 px-4 flex justify-between items-center">
         <span>
-           🔔 {{ $options['top_baner_text'] ?? 'Reminder: Your wallet balance must be sufficient before placing a vote.' }}
+            🔔
+            {{ $options['top_baner_text'] ?? 'Reminder: Your wallet balance must be sufficient before placing a vote.' }}
 
         </span>
     </div>

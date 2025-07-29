@@ -64,6 +64,11 @@
                                 <input type="text" class="form-control" name="top_baner_text" id="top_baner_text"
                                     value="{{ old('top_baner_text', $options['top_baner_text'] ?? 'Reminder: Your wallet balance must be sufficient before placing a vote.') }}">
                             </div>
+                            <div class="mb-3">
+                                <label for="top_baner_text" class="form-label">Google Search Console Tag</label>
+                                <input placeholder="Please enter google tag" type="text" class="form-control" name="google_search_console_tag" id="google_search_console_tag"
+                                    value="{{ old('google_search_console_tag', $options['google_search_console_tag'] ?? '') }}">
+                            </div>
 
                             <div class="text-end">
                                 <button type="submit" class="btn btn-primary">

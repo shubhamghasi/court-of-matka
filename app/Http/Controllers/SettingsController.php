@@ -25,9 +25,20 @@ class SettingsController extends Controller
             'trend_check_amount' => 'nullable|string',
             'whatsapp_number' => 'nullable|numeric',
             'top_baner_text' => 'nullable|string',
+            'google_search_console_tag' => 'nullable',
         ]);
 
-        $data = $request->only(['app_name', 'upi_id', 'meta_title', 'meta_description', 'trend_check_amount', 'doubt_check_amount', 'whatsapp_number', 'top_baner_text']);
+        $data = $request->only([
+            'app_name',
+            'upi_id',
+            'meta_title',
+            'meta_description',
+            'trend_check_amount',
+            'doubt_check_amount',
+            'whatsapp_number',
+            'top_baner_text',
+            'google_search_console_tag'
+        ]);
 
         foreach ($data as $name => $value) {
             Option::updateOrCreate(
