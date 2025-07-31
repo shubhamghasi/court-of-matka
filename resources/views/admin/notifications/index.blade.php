@@ -26,6 +26,9 @@
                             <th>
                                 <h6 class="text-sm text-medium">End Time</h6>
                             </th>
+                            <th>
+                                <h6 class="text-sm text-medium text-center">Created at</h6>
+                            </th>
                             <th class="text-end">
                                 <h6 class="text-sm text-medium">Actions</h6>
                             </th>
@@ -38,10 +41,13 @@
                                     <p class="text-sm">{{ $notification->message }}</p>
                                 </td>
                                 <td>
-                                    <p class="text-sm">{{ $notification->start_time ?? '—' }}</p>
+                                    <p class="text-sm text-center">{{ $notification->start_time ?? '--:--' }}</p>
                                 </td>
                                 <td>
-                                    <p class="text-sm">{{ $notification->end_time ?? '—' }}</p>
+                                    <p class="text-sm text-center">{{ $notification->end_time ?? '--:--' }}</p>
+                                </td>
+                                <td>
+                                    <p class="text-sm text-center">{{ $notification->created_at ? $notification?->created_at?->format('d M, Y h:i A') : "--:--" }}</p>
                                 </td>
                                 <td>
                                     <div class="action justify-content-end">

@@ -36,6 +36,9 @@
                                 <h6 class="text-sm text-medium">Predicted Numbers</h6>
                             </th>
                             <th>
+                                <h6 class="text-sm text-medium">Created at</h6>
+                            </th>
+                            <th>
                                 <h6 class="text-sm text-medium">Status</h6>
                             </th>
                             <th>
@@ -82,6 +85,10 @@
                                     @else
                                         <span class="text-muted">Not generated</span>
                                     @endif
+                                </td>
+
+                                <td>
+                                    <p class="text-sm">{{ $trendRequest->created_at->format('d M y, h:i A') }}</p>
                                 </td>
 
                                 <td>

@@ -39,6 +39,9 @@
                                 <h6 class="text-sm text-medium">Accuracy</h6>
                             </th>
                             <th>
+                                <h6 class="text-sm text-medium">Created at</h6>
+                            </th>
+                            <th>
                                 <h6 class="text-sm text-medium text-end">Action</h6>
                             </th>
                         </tr>
@@ -72,6 +75,9 @@
                                 </td>
                                 <td>
                                     <p class="text-sm">{{ $doubt->accuracy ?? 'Not analyzed' }}</p>
+                                </td>
+                                <td>
+                                    <p class="text-sm text -center">{{ $doubt->created_at->format('d M, Y h:i A')}}</p>
                                 </td>
                                 <td>
                                     <div class="action justify-content-end">

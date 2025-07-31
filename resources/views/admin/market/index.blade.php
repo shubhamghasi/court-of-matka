@@ -30,6 +30,9 @@
                             <th class="min-width">
                                 <h6 class="text-sm text-medium">Status</h6>
                             </th>
+                            <th class="min-width">
+                                <h6 class="text-sm text-medium text-center">Created at</h6>
+                            </th>
                             <th>
                                 <h6 class="text-sm text-medium text-end">Actions</h6>
                             </th>
@@ -55,6 +58,9 @@
                                     <span class="status-btn {{ $isActive ? 'success-btn' : 'close-btn' }}">
                                         {{ $isActive ? 'Active' : 'Inactive' }}
                                     </span>
+                                </td>
+                                <td>
+                                    <p class="text-center text-sm">{{$market->created_at->format('d M, Y h:i A')}}</p>
                                 </td>
                                 <td>
                                     <div class="action justify-content-end">

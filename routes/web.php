@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\MarketController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\NumberAmountController;
+use App\Http\Controllers\Admin\PromoController;
 use App\Http\Controllers\Admin\RefundController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
@@ -31,6 +32,7 @@ Route::middleware('guest')->group(function () {
     });
 });
 Route::middleware(['auth', 'validated_email'])->group(function () {
+    Route::post('/check-promo', [PromoController::class, 'check'])->name('promo.check');
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::post('send-matka-bet', [MatkaBetsController::class, 'handleMatkaBet'])->name('handleMatkaBet');
     Route::match(['get', 'post'], 'prediction', [PredictionController::class, 'index'])->name('predict.store');
@@ -50,6 +52,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('', function () {
         return view('admin.index');
     })->name('admin.home');
+    Route::resource('promo', PromoController::class)->except(['show'])->names('admin.promo');
     Route::resource('market', MarketController::class)->names('admin.market');
     Route::get('matka-bet-list', [MatkaBetsController::class, 'getMatkaBetList'])->name('getMatkaBetList');
     Route::get('refund-requests', [RefundController::class, 'index'])->name('admin.refunds');

@@ -34,6 +34,11 @@
                                 </h6>
                             </th>
                             <th>
+                                <h6 class="text-sm text-medium text-center">
+                                    Created At
+                                </h6>
+                            </th>
+                            <th>
                                 <h6 class="text-sm text-medium text-end">
                                     Action
                                 </h6>
@@ -54,6 +59,9 @@
                                 </td>
                                 <td>
                                     <p class="text-sm text-center">₹{{ $numData->amount }}</p>
+                                </td>
+                                <td>
+                                    <p class="text-sm text-center">{{ $numData->created_at->format('d M, Y  h:i A') }}</p>
                                 </td>
                                 <td>
                                     <div class="action justify-content-end">

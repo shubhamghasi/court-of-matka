@@ -162,6 +162,25 @@
                 </ul>
             </li>
 
+            {{-- Promos --}}
+            @php $isPromo = Route::is('admin.promo.*'); @endphp
+            <li class="nav-item nav-item-has-children">
+                <a href="#0" data-bs-toggle="collapse" data-bs-target="#promo"
+                    aria-controls="promo" aria-expanded="{{ $isPromo ? 'true' : 'false' }}"
+                    aria-label="Toggle navigation">
+                    <span class="icon"><span class="mdi mdi-ticket-percent"></span></span>
+                    <span class="text">Promotions</span>
+                </a>
+                <ul id="promo" class="dropdown-nav {{ $isPromo ? 'show' : 'collapse' }}">
+                    <li><a href="{{ route('admin.promo.index') }}"
+                            class="{{ $route === 'admin.promo.index' ? 'active' : '' }}">All Promos</a>
+                    </li>
+                    <li><a href="{{ route('admin.promo.create') }}"
+                            class="{{ $route === 'admin.promo.create' ? 'active' : '' }}">Add Promo</a>
+                    </li>
+                </ul>
+            </li>
+
             {{-- Settings --}}
             @php $isSettings = Route::is('admin.settings.edit'); @endphp
             <li class="nav-item nav-item-has-children">

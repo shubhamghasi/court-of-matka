@@ -11,7 +11,7 @@
                         </path>
                     </svg>
                 </div>
-                <h2 class="text-2xl font-bold text-gray-800">{{ $options['doubt_title'] ?? "Doubt Check" }}</h2>
+                <h2 class="text-2xl font-bold text-gray-800">{{ $options['doubt_title'] ?? 'Doubt Check' }}</h2>
             </div>
 
             <form id="doubt_check_form" onsubmit="submitDoubtForm(event)" class="space-y-6">
@@ -64,7 +64,7 @@
                                 ID</label>
                             <div class="flex">
                                 <input type="text" id="doubt_check_upi" readonly
-                                    value="{{ $options['upi_id'] ?? "demo@upi"}}"
+                                    value="{{ $options['upi_id'] ?? 'demo@upi' }}"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-l-lg bg-gray-50 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                                 <button type="button" onclick="copyUPI()"
                                     class="bg-indigo-600 text-white px-4 py-2 rounded-r-lg hover:bg-indigo-700 transition">
@@ -78,6 +78,24 @@
                             </div>
                         </div>
 
+                        <div>
+                            <label for="doubt_check_promo" class="block text-sm font-medium text-gray-700 mb-1">
+                                Promo Code (optional)
+                            </label>
+
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <input type="text" name="promo" id="doubt_check_promo"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                                    placeholder="Enter promo code if you have one">
+
+                                <button type="button" onclick="checkPromoCode()"
+                                    class="sm:w-auto w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
+                                    Check Promo
+                                </button>
+                            </div>
+
+                            <p id="promo_check_result" class="text-sm mt-2"></p>
+                        </div>
                         <div>
                             <label for="doubt_check_transaction_id"
                                 class="block text-sm font-medium text-gray-700 mb-1">Transaction ID</label>
@@ -134,6 +152,7 @@
             const numberType = document.getElementById("doubt_check_number_type").value;
             const number = document.getElementById("doubt_check_number").value.trim();
             const transactionId = document.getElementById("doubt_check_transaction_id").value.trim();
+            const promo = document.getElementById("doubt_check_promo").value.trim();
 
             if (!market || !numberType || !number || !transactionId) {
                 showToast('error', "Please fill in all fields before submitting.");
@@ -163,6 +182,39 @@
                 },
                 error: function(xhr) {
                     showToast('error', "Submission failed. Please try again.");
+                }
+            });
+        }
+
+        function checkPromoCode() {
+            const promo = document.getElementById("doubt_check_promo").value.trim();
+            const resultBox = document.getElementById("promo_check_result");
+
+            if (!promo) {
+                resultBox.textContent = "Please enter a promo code.";
+                resultBox.className = "text-sm text-red-600 mt-2";
+                return;
+            }
+
+            $.ajax({
+                url: '{{ route('promo.check') }}', 
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    promo: promo
+                },
+                success: function(response) {
+                    if (response.valid) {
+                        resultBox.textContent = response.message || "Promo code is valid!";
+                        resultBox.className = "text-sm text-green-600 mt-2";
+                    } else {
+                        resultBox.textContent = response.message || "Invalid or expired promo code.";
+                        resultBox.className = "text-sm text-red-600 mt-2";
+                    }
+                },
+                error: function() {
+                    resultBox.textContent = "Could not verify promo code. Try again.";
+                    resultBox.className = "text-sm text-red-600 mt-2";
                 }
             });
         }

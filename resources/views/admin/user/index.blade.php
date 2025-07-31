@@ -28,6 +28,9 @@
                                 <h6 class="text-sm text-medium text-center">Verified?</h6>
                             </th>
                             <th>
+                                <h6 class="text-sm text-medium text-center">Created At</h6>
+                            </th>
+                            <th>
                                 <h6 class="text-sm text-medium text-center">Action</h6>
                             </th>
                             {{-- <th class="min-width">
@@ -61,6 +64,9 @@
                                     <p
                                         class=" text-center status-btn {{ $user->email_verified_at ? 'success-btn' : 'danger-btn text-white' }}">
                                         {{ $user->email_verified_at ? 'Verified' : 'Not Verified' }}</p>
+                                </td>
+                                <td>
+                                    <p class="text-sm text-center">{{ $user->created_at->format('d M, Y h:i A')  }}</p>
                                 </td>
                                 <td>
                                     <div class="action justify-content-end">
