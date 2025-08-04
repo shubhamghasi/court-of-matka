@@ -22,6 +22,8 @@ class PromoController extends Controller
 
     public function store(Request $request)
     {
+        $cleaned_promo_code = trim(strtolower($request->code));
+        $request->merge(['code' => $cleaned_promo_code]);
         $data = $this->validatePromo($request);
         Promo::create($data);
 
@@ -49,20 +51,21 @@ class PromoController extends Controller
 
     public function check(Request $request)
     {
-        $promo = $request->input('promo');
-
-        $validPromos = ['SAVE10', 'DISCOUNT20', 'FREEDOUBT'];
-
-        if (in_array(strtoupper($promo), $validPromos)) {
+        $promoCode = trim(strtolower($request->input('promo')));
+        
+        $promo = Promo::where('code', $promoCode)->first();
+        
+        if (!$promo || $promo->expires_at < now() || !$promo->is_active) {
             return response()->json([
-                'valid' => true,
-                'message' => 'Promo code applied successfully!'
+                'valid' => false,
+                'message' => 'Invalid or expired promo code.'
             ]);
         }
 
         return response()->json([
-            'valid' => false,
-            'message' => 'Invalid or expired promo code.'
+            'valid' => true,
+            'message' => 'Valid promo code.',
+            'data' => $promo
         ]);
     }
 

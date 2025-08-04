@@ -54,7 +54,8 @@
                             <p class="text-gray-600">Get expert analysis on your number</p>
                         </div>
                         <div class="text-2xl font-bold text-indigo-600">
-                            ₹{{ !empty($options['doubt_check_amount']) ? $options['doubt_check_amount'] : '0.00' }}
+                            ₹<span
+                                id="doubt_amount">{{ !empty($options['doubt_check_amount']) ? $options['doubt_check_amount'] : '0.00' }}</span>
                         </div>
                     </div>
 
@@ -88,9 +89,9 @@
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
                                     placeholder="Enter promo code if you have one">
 
-                                <button type="button" onclick="checkPromoCode()"
-                                    class="sm:w-auto w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
-                                    Check Promo
+                                <button type="button" onclick="checkDoubtPromoCode()"
+                                    class="sm:w-auto w-full bg-green-600 text-white px-4 rounded-lg hover:bg-green-700 transition text-sm">
+                                    Apply
                                 </button>
                             </div>
 
@@ -186,9 +187,11 @@
             });
         }
 
-        function checkPromoCode() {
+        function checkDoubtPromoCode() {
             const promo = document.getElementById("doubt_check_promo").value.trim();
             const resultBox = document.getElementById("promo_check_result");
+            const doubtElement = document.getElementById("doubt_amount");
+            const doubt_amount = Number(doubtElement.textContent);
 
             if (!promo) {
                 resultBox.textContent = "Please enter a promo code.";
@@ -197,7 +200,7 @@
             }
 
             $.ajax({
-                url: '{{ route('promo.check') }}', 
+                url: '{{ route('promo.check') }}',
                 method: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',
@@ -205,10 +208,30 @@
                 },
                 success: function(response) {
                     if (response.valid) {
-                        resultBox.textContent = response.message || "Promo code is valid!";
-                        resultBox.className = "text-sm text-green-600 mt-2";
+                        if (response.data.is_valid_on_doubt === true) {
+                            const doubt_amount = Number(document.getElementById("doubt_amount").textContent);
+                            let discounted_doubt_amount = doubt_amount;
+
+                            if (response.data.discount_amount !== null && response.data.discount_amount > 0) {
+                                discounted_doubt_amount -= response.data.discount_amount;
+                            } else if (response.data.discount_percent !== null && response.data
+                                .discount_percent > 0) {
+                                discounted_doubt_amount *= (1 - response.data.discount_percent / 100);
+                            }
+
+                            discounted_doubt_amount = Math.max(discounted_doubt_amount, 0);
+
+                            resultBox.textContent =
+                                `Promo applied! ₹${doubt_amount.toFixed(2)} → ₹${discounted_doubt_amount.toFixed(2)}`;
+                            resultBox.className = "text-sm text-green-600 mt-2";
+                            doubtElement.textContent = discounted_doubt_amount.toFixed(2);
+                        } else {
+                            resultBox.textContent =
+                                "Promo code is not valid for this item.";
+                            resultBox.className = "text-sm text-yellow-600 mt-2";
+                        }
                     } else {
-                        resultBox.textContent = response.message || "Invalid or expired promo code.";
+                        resultBox.textContent = "Invalid or expired promo code.";
                         resultBox.className = "text-sm text-red-600 mt-2";
                     }
                 },

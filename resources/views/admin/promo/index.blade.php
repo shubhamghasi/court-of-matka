@@ -55,7 +55,7 @@
                         @forelse ($promos as $promo)
                             <tr>
                                 <td>
-                                    <p class="text-sm text-center">{{ $promo->code }}</p>
+                                    <p class="text-sm text-center">{{ strtoupper($promo->code) }}</p>
                                 </td>
                                 <td>
                                     <p class="text-sm text-center">{{ $promo->discount_amount ? "₹".$promo->discount_amount : '---' }}</p>

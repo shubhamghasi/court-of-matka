@@ -11,7 +11,8 @@
                         </path>
                     </svg>
                 </div>
-                <h2 class="text-2xl font-bold text-gray-800">{{ $options['trends_title'] ?? "Check Trending Number" }}</h2>
+                <h2 class="text-2xl font-bold text-gray-800">{{ $options['trends_title'] ?? 'Check Trending Number' }}
+                </h2>
             </div>
 
             <form id="trendsForm" class="space-y-6">
@@ -51,7 +52,8 @@
                             <p class="text-gray-600">Get detailed betting trends and analysis</p>
                         </div>
                         <div class="text-2xl font-bold text-indigo-600">
-                            ₹{{ !empty($options['trend_check_amount']) ? $options['trend_check_amount'] : '0.00' }}
+                            ₹<span
+                                id="trends_amount">{{ !empty($options['trend_check_amount']) ? $options['trend_check_amount'] : '0.00' }}</span>
                         </div>
                     </div>
 
@@ -71,6 +73,25 @@
                                     </svg>
                                 </button>
                             </div>
+                        </div>
+
+                        <div>
+                            <label for="trends_promo" class="block text-sm font-medium text-gray-700 mb-1">
+                                Promo Code (optional)
+                            </label>
+
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <input type="text" id="trends_promo"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    placeholder="Enter promo code">
+
+                                <button type="button" onclick="checkDoubtTrend()"
+                                    class="sm:w-auto w-full bg-green-600 text-white px-4 rounded-lg hover:bg-green-700 transition text-sm">
+                                    Apply
+                                </button>
+                            </div>
+
+                            <p id="trends_promo_result" class="text-sm mt-2"></p>
                         </div>
 
                         <div>
@@ -129,3 +150,76 @@
         </div>
     </div>
 </section>
+@push('scripts')
+    <script>
+        function checkDoubtTrend() {
+            const promo = $('#trends_promo').val().trim();
+            const resultBox = $('#trends_promo_result');
+            const trendsElement = document.getElementById('trends_amount');
+
+            // Store original amount in data-original-amount attribute if not already
+            if (!trendsElement.dataset.originalAmount) {
+                trendsElement.dataset.originalAmount = trendsElement.textContent;
+            }
+
+            const originalAmount = Number(trendsElement.dataset.originalAmount);
+
+            if (!promo) {
+                resultBox.text("Please enter a promo code.").removeClass().addClass('text-yellow-600');
+                return;
+            }
+
+            $.ajax({
+                url: '{{ route('promo.check') }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    promo: promo
+                },
+                success: function(response) {
+                    if (response.valid) {
+                        if (response.data.is_valid_on_trends === true) {
+                            let discountedAmount = originalAmount;
+
+                            if (response.data.discount_amount !== null && response.data.discount_amount > 0) {
+                                discountedAmount -= response.data.discount_amount;
+                            } else if (response.data.discount_percent !== null && response.data
+                                .discount_percent > 0) {
+                                discountedAmount *= (1 - response.data.discount_percent / 100);
+                            }
+
+                            discountedAmount = Math.max(discountedAmount, 0);
+
+                            // Update amount display
+                            trendsElement.textContent = discountedAmount.toFixed(2);
+
+                            // Update success message
+                            resultBox.text(
+                                    `Promo applied! ₹${originalAmount.toFixed(2)} → ₹${discountedAmount.toFixed(2)}`
+                                    )
+                                .removeClass()
+                                .addClass('text-green-600');
+
+                            // Store applied promo in a hidden field if needed
+                            $('#applied_promo_code').val(promo);
+
+                        } else {
+                            resultBox.text("Promo code is not valid for this section.")
+                                .removeClass()
+                                .addClass('text-yellow-600');
+                        }
+                    } else {
+                        resultBox.text("Invalid or expired promo code.")
+                            .removeClass()
+                            .addClass('text-red-600');
+                    }
+                },
+                error: function() {
+                    resultBox.text("Could not verify promo code. Try again.")
+                        .removeClass()
+                        .addClass('text-red-600');
+                }
+            });
+        }
+    </script>
+@endpush
