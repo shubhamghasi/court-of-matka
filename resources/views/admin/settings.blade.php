@@ -86,9 +86,44 @@
                             </div>
                             <div class="mb-3">
                                 <label for="top_baner_text" class="form-label">Google Search Console Tag</label>
-                                <input placeholder="Please enter google tag" type="text" class="form-control" name="google_search_console_tag" id="google_search_console_tag"
+                                <input placeholder="Please enter google tag" type="text" class="form-control"
+                                    name="google_search_console_tag" id="google_search_console_tag"
                                     value="{{ old('google_search_console_tag', $options['google_search_console_tag'] ?? '') }}">
                             </div>
+
+                            <hr>
+                            <h5 class="mb-3">Feature Visibility</h5>
+
+                            <div class="form-check mb-2">
+                                <input type="checkbox" class="form-check-input" id="play_matka_enabled"
+                                    name="play_matka_enabled" value="1"
+                                    {{ old('play_matka_enabled', $options['play_matka_enabled'] ?? false) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="play_matka_enabled">Enable Play Matka Section</label>
+                            </div>
+
+                            <div class="form-check mb-2">
+                                <input type="checkbox" class="form-check-input" id="secure_bet_enabled"
+                                    name="secure_bet_enabled" value="1"
+                                    {{ old('secure_bet_enabled', $options['secure_bet_enabled'] ?? false) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="secure_bet_enabled">Enable Secure Bet Section</label>
+                            </div>
+
+                            <div class="form-check mb-2">
+                                <input type="checkbox" class="form-check-input" id="betting_trend_enabled"
+                                    name="betting_trend_enabled" value="1"
+                                    {{ old('betting_trend_enabled', $options['betting_trend_enabled'] ?? false) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="betting_trend_enabled">Enable Betting Trend
+                                    Section</label>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input type="checkbox" class="form-check-input" id="doubt_check_enabled"
+                                    name="doubt_check_enabled" value="1"
+                                    {{ old('doubt_check_enabled', $options['doubt_check_enabled'] ?? false) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="doubt_check_enabled">Enable Doubt Check
+                                    Section</label>
+                            </div>
+
 
                             <div class="text-end">
                                 <button type="submit" class="btn btn-primary">

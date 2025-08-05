@@ -145,7 +145,7 @@ Current betting distribution across numbers. The number(s) with the lowest perce
                                         $isLightest = $isLowest && $item['number'] == $highlightedNumber;
                                     @endphp
                                     <div
-                                        class="number-badge relative flex flex-col items-center justify-center p-2 rounded-lg {{ $isLightest ? 'bg-green-100' : ($isLowest ? 'bg-green-300' : 'bg-gray-100') }}">
+                                        class="mb-3 number-badge relative flex flex-col items-center justify-center p-2 rounded-lg {{ $isLightest ? 'bg-green-100' : ($isLowest ? 'bg-green-300' : 'bg-gray-100') }}">
                                         <span
                                             class="order-badge {{ $isLowest ? 'bg-green-700' : 'bg-purple-dark' }} text-white">
                                             {{ $item['number'] }}
@@ -188,7 +188,7 @@ Current betting distribution across numbers. The number(s) with the lowest perce
 
                         @foreach ($doubtChecks as $doubt)
                             <div
-                                class="notification-item bg-white rounded-xl shadow-sm overflow-hidden border-l-4 border-green">
+                                class="mb-3 notification-item bg-white rounded-xl shadow-sm overflow-hidden border-l-4 border-green">
                                 <div class="p-4">
                                     <div class="flex justify-between items-center mb-2">
                                         <div class="flex items-center">
@@ -204,8 +204,8 @@ Current betting distribution across numbers. The number(s) with the lowest perce
                                     </div>
 
                                     <textarea class="w-full p-3 bg-green-50 text-gray-700 rounded-lg border-0 mb-4" rows="2" readonly>
-Number: {{ $doubt->number }} | Market: {{ $doubt->market?->name }} | Type: {{ $doubt->numberType?->name }}
-Accuracy: {{ $doubt->accuracy ?? '70%' }}%
+Number: {{ $doubt->number }} | Market: {{ $doubt->market?->name }} | Type: {{ ucfirst($doubt->numberType?->name) }}
+Accuracy: {{ $doubt->accuracy ?? '70%' }}
                                     </textarea>
 
                                     <div class="flex justify-between items-center">

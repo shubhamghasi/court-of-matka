@@ -29,7 +29,11 @@ class SettingsController extends Controller
             'refund_title' => 'string|nullable',
             'play_matka_title' => 'string|nullable',
             'doubt_title' => 'string|nullable',
-            'trends_title' => 'string|nullable'
+            'trends_title' => 'string|nullable',
+            'play_matka_enabled' => 'nullable|boolean',
+            'secure_bet_enabled' => 'nullable|boolean',
+            'betting_trend_enabled' => 'nullable|boolean',
+            'doubt_check_enabled' => 'nullable|boolean',
         ]);
 
         $data = $request->only([
@@ -47,6 +51,17 @@ class SettingsController extends Controller
             'doubt_title',
             'trends_title',
         ]);
+
+        $toggles = [
+            'play_matka_enabled',
+            'secure_bet_enabled',
+            'betting_trend_enabled',
+            'doubt_check_enabled',
+        ];
+
+        foreach ($toggles as $toggle) {
+            $data[$toggle] = $request->has($toggle) ? 1 : 0;
+        }
 
         foreach ($data as $name => $value) {
             Option::updateOrCreate(

@@ -4,13 +4,21 @@
     <main class="container mx-auto px-4 py-8">
         {{-- @include('partials.home.intro') --}}
 
-        @include('partials.home.play_matka')
+        @if (!empty($options['play_matka_enabled']))
+            @include('partials.home.play_matka')
+        @endif
 
-        @include('partials.home.secure_bet')
+        @if (!empty($options['secure_bet_enabled']))
+            @include('partials.home.secure_bet')
+        @endif
 
-        @include('partials.home.betting_trend')
+        @if (!empty($options['betting_trend_enabled']))
+            @include('partials.home.betting_trend')
+        @endif
 
-        @include('partials.home.doubt_check')
+        @if (!empty($options['doubt_check_enabled']))
+            @include('partials.home.doubt_check')
+        @endif
 
         <div id="floating-notification"
             style="
