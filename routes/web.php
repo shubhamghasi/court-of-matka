@@ -1,9 +1,13 @@
 <?php
 
+use App\Http\Controllers\Admin\AnkController;
+use App\Http\Controllers\Admin\JodiController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\MarketController;
+use App\Http\Controllers\Admin\MatkaNumberController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\NumberAmountController;
+use App\Http\Controllers\Admin\PanelController;
 use App\Http\Controllers\Admin\PromoController;
 use App\Http\Controllers\Admin\RefundController;
 use App\Http\Controllers\Admin\UserController;
@@ -75,6 +79,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('doubt-check/resolve/{id}', [DoubtCheckController::class, 'markAsResolved'])->name('admin.doubt.mark-resolved');
     Route::post('analyze/{id}', [DoubtCheckController::class, 'analyze'])->name('admin.doubt.analyze');
     Route::post('doubt/send-result/{id}', [DoubtCheckController::class, 'sendResult'])->name('admin.doubt.send-result');
+    Route::resource('matka/numbers', MatkaNumberController::class)->names('admin.matka.numbers');
 });
 
 Route::get('/notifications/data', [NotificationController::class, 'getNotifications'])->name('notifications.json');

@@ -143,6 +143,31 @@
                             class="{{ $route === 'admin.number.type.create' ? 'active' : '' }}">Add Type</a></li>
                 </ul>
             </li>
+
+            @php $isMatkaNumbers = Route::is('admin.matka.numbers.*'); @endphp
+            <li class="nav-item nav-item-has-children">
+                <a href="#0" data-bs-toggle="collapse" data-bs-target="#matka_numbers_nav"
+                    aria-controls="matka_numbers_nav" aria-expanded="{{ $isMatkaNumbers ? 'true' : 'false' }}"
+                    aria-label="Toggle navigation">
+                    <span class="icon"><span class="mdi mdi-numeric"></span></span>
+                    <span class="text">Matka Numbers</span>
+                </a>
+                <ul id="matka_numbers_nav" class="dropdown-nav {{ $isMatkaNumbers ? 'show' : 'collapse' }}">
+                    <li>
+                        <a href="{{ route('admin.matka.numbers.index') }}"
+                            class="{{ $route === 'admin.matka.numbers.index' ? 'active' : '' }}">
+                            All Numbers
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.matka.numbers.create') }}"
+                            class="{{ $route === 'admin.matka.numbers.create' ? 'active' : '' }}">
+                            Add Number
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
             {{-- Notifications --}}
             @php $isNotifications = Route::is('admin.notifications.*'); @endphp
             <li class="nav-item nav-item-has-children">
@@ -165,9 +190,8 @@
             {{-- Promos --}}
             @php $isPromo = Route::is('admin.promo.*'); @endphp
             <li class="nav-item nav-item-has-children">
-                <a href="#0" data-bs-toggle="collapse" data-bs-target="#promo"
-                    aria-controls="promo" aria-expanded="{{ $isPromo ? 'true' : 'false' }}"
-                    aria-label="Toggle navigation">
+                <a href="#0" data-bs-toggle="collapse" data-bs-target="#promo" aria-controls="promo"
+                    aria-expanded="{{ $isPromo ? 'true' : 'false' }}" aria-label="Toggle navigation">
                     <span class="icon"><span class="mdi mdi-ticket-percent"></span></span>
                     <span class="text">Promotions</span>
                 </a>
