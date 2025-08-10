@@ -32,7 +32,18 @@
                             class="{{ $route === 'admin.market.create' ? 'active' : '' }}">Add Market</a></li>
                 </ul>
             </li>
-
+            @php $isMarket = Route::is('admin.matka.bets*'); @endphp
+            <li class="nav-item nav-item-has-children">
+                <a href="#0" data-bs-toggle="collapse" data-bs-target="#add_matka_bets" aria-controls="add_matka_bets"
+                    aria-expanded="{{ $isMarket ? 'true' : 'false' }}" aria-label="Toggle navigation">
+                    <span class="icon"><span class="mdi mdi-store"></span></span>
+                    <span class="text">Add Matka Bets</span>
+                </a>
+                <ul id="add_matka_bets" class="dropdown-nav {{ $isMarket ? 'show' : 'collapse' }}">
+                    <li><a href="{{ route('admin.matka.bets.create') }}"
+                            class="{{ $route === 'admin.market.index' ? 'active' : '' }}">Add Matka Bets</a></li>
+                </ul>
+            </li>
             {{-- Users --}}
             @php $isUsers = Route::is('admin.user*'); @endphp
             <li class="nav-item nav-item-has-children">
@@ -42,7 +53,8 @@
                     <span class="text">Users</span>
                 </a>
                 <ul id="users_nav" class="dropdown-nav {{ $isUsers ? 'show' : 'collapse' }}">
-                    <li><a href="{{ route('admin.user') }}" class="{{ $route === 'admin.user' ? 'active' : '' }}">Users
+                    <li><a href="{{ route('admin.user') }}"
+                            class="{{ $route === 'admin.user' ? 'active' : '' }}">Users
                             List</a></li>
                 </ul>
             </li>

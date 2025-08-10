@@ -7,6 +7,7 @@ use App\Models\MatkaBet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class MatkaBetsController extends Controller
 {
@@ -53,5 +54,50 @@ class MatkaBetsController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(20);
         return view('admin.matka.betlist', compact(['matBetsCollection']));
+    }
+
+    public function fetchBets(Request $request)
+    {
+        $request->validate([
+            'market'        => 'required|integer',
+            'number_type'   => 'required|integer',
+            'date'          => 'required|date',
+            'panel_number'  => 'nullable|string'
+        ]);
+
+        $betsQuery = MatkaBet::select('number_id', DB::raw('SUM(amount) as total_amount'))
+            ->with('number')
+            ->where('market_id', $request->market)
+            ->where('number_type_id', $request->number_type)
+            ->whereDate('created_at', $request->date);
+
+        // If panel_number is provided, filter related number table
+        if (!empty($request->panel_number)) {
+            $betsQuery->whereHas('number', function ($q) use ($request) {
+                $q->where('number', $request->panel_number);
+            });
+        }
+
+        $bets = $betsQuery
+            ->groupBy('number_id')
+            ->get();
+
+        // Find highest total_amount
+        $maxAmount = $bets->max('total_amount');
+
+        // Add a flag to each bet
+        $bets = $bets->map(function ($bet) use ($maxAmount) {
+            $bet->is_highest = ($bet->total_amount == $maxAmount);
+            return $bet;
+        })
+            ->sortBy(function ($bet) {
+                return $bet->number->panel_number ?? $bet->number->number;
+            })
+            ->values();
+
+        return response()->json([
+            'success' => true,
+            'data'    => $bets
+        ]);
     }
 }

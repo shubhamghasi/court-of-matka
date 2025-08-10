@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AnkController;
 use App\Http\Controllers\Admin\JodiController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\MarketController;
+use App\Http\Controllers\Admin\MatkaBetController;
 use App\Http\Controllers\Admin\MatkaNumberController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\NumberAmountController;
@@ -48,6 +49,7 @@ Route::middleware(['auth', 'validated_email'])->group(function () {
     Route::post('/doubt-check/submit', [PredictionController::class, 'submitDoubt'])->name('doubt.check.submit');
     Route::post('/notifications/doubt/{id}/mark-as-read', [NotificationController::class, 'markDoubtAsRead'])
         ->name('notifications.doubt.markAsRead');
+    Route::post('/market-bets/fetch', [MatkaBetsController::class, 'fetchBets']);
 });
 
 
@@ -80,6 +82,17 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('analyze/{id}', [DoubtCheckController::class, 'analyze'])->name('admin.doubt.analyze');
     Route::post('doubt/send-result/{id}', [DoubtCheckController::class, 'sendResult'])->name('admin.doubt.send-result');
     Route::resource('matka/numbers', MatkaNumberController::class)->names('admin.matka.numbers');
+    // Show the Add Bets form
+    Route::get('matka/bets/create', [MatkaBetController::class, 'create'])
+        ->name('admin.matka.bets.create');
+
+    // Save the bets
+    Route::post('matka/bets/store', [MatkaBetController::class, 'store'])
+        ->name('admin.matka.bets.store');
+
+    // Get numbers by number type (AJAX)
+    Route::post('matka/bets/get-numbers', [MatkaBetController::class, 'getNumbers'])
+        ->name('admin.matka.bets.getNumbers');
 });
 
 Route::get('/notifications/data', [NotificationController::class, 'getNotifications'])->name('notifications.json');

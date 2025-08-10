@@ -43,17 +43,23 @@ class MatkaNumberController extends Controller
         ]);
 
         if ($isPanel) {
-            // Extract a single number
-            $number = trim($validated['number']);
+            // Extract a single number (allow "0")
+            $numberParts = array_filter(
+                array_map('trim', explode(',', $validated['number'])),
+                fn($value) => $value !== '' || $value === '0'
+            );
 
-            // Validate only one number is provided
-            $numberParts = array_filter(array_map('trim', explode(',', $number)));
             if (count($numberParts) > 1) {
                 return back()->withErrors(['number' => 'Only one number is allowed when using panel numbers.'])->withInput();
             }
 
-            // Extract panel numbers
-            $panelNumbers = array_filter(array_map('trim', explode(',', $validated['panel_number'])));
+            $number = reset($numberParts); // get the first and only number
+
+            // Extract panel numbers (allow "0")
+            $panelNumbers = array_filter(
+                array_map('trim', explode(',', $validated['panel_number'])),
+                fn($value) => $value !== '' || $value === '0'
+            );
 
             foreach ($panelNumbers as $panelNumber) {
                 MatkaNumber::create([
@@ -63,8 +69,11 @@ class MatkaNumberController extends Controller
                 ]);
             }
         } else {
-            // Non-panel logic — multiple numbers allowed
-            $numbers = array_filter(array_map('trim', explode(',', $validated['number'])));
+            // Non-panel logic — multiple numbers allowed (allow "0")
+            $numbers = array_filter(
+                array_map('trim', explode(',', $validated['number'])),
+                fn($value) => $value !== '' || $value === '0'
+            );
 
             foreach ($numbers as $number) {
                 MatkaNumber::create([

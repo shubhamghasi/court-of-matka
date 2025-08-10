@@ -79,7 +79,6 @@ $("#play_matka_form").on("submit", function (e) {
 });
 
 $(document).ready(function () {
-    const csrf_token = $('meta[name="csrf-token"]').attr("content");
 
     $("#refundForm").on("submit", function (e) {
         e.preventDefault();
@@ -142,88 +141,6 @@ $(document).ready(function () {
 
 $("#dismissSuccess").on("click", function () {
     $("#refundSuccess").addClass("hidden");
-});
-
-$("#trendsForm").on("submit", function (e) {
-    e.preventDefault();
-
-    const form = $(this);
-    const transactionId = $("#trend_check").val().trim();
-    const market = $("#trends-market").val();
-    const number_type = $("#number_type").val();
-    url = "/prediction";
-
-    // Reset previous messages
-    $("#PredictionerrorMessage").hide();
-    $("#PredictionsuccessMessage").hide();
-
-    // Basic validation
-    if (!transactionId || transactionId.length < 8) {
-        $("#errorText").text("Please enter a valid Transaction ID.");
-        $("#PredictionerrorMessage").fadeIn();
-        return;
-    }
-
-    if (!market) {
-        $("#errorText").text("Please select a market.");
-        $("#errorMessage").fadeIn();
-        return;
-    }
-    if (!number_type) {
-        $("#errorText").text("Please select Number Type.");
-        $("#errorMessage").fadeIn();
-        return;
-    }
-
-    const formData = {
-        market_id: market,
-        transaction_id: transactionId,
-        number_type: number_type,
-        _token: csrf_token,
-    };
-    console.log(formData);
-    // return;
-    $.ajax({
-        type: "POST",
-        url: url,
-        data: formData,
-        dataType: "json",
-        beforeSend: function () {
-            // Optional: show loader or disable button
-        },
-        success: function (response) {
-            console.log(response);
-
-            if (response.status) {
-                showToast(
-                    "success",
-                    response.message || "Prediction submitted."
-                );
-            } else {
-                showToast("error", response.message || "Prediction Error.");
-            }
-        },
-        error: function (xhr) {
-            let message =
-                "There was an error submitting your request. Please try again.";
-
-            if (
-                xhr.status === 422 &&
-                xhr.responseJSON &&
-                xhr.responseJSON.errors
-            ) {
-                const errors = xhr.responseJSON.errors;
-                message = Object.values(errors)
-                    .map((e) => e[0])
-                    .join(" ");
-            } else if (xhr.responseJSON?.message) {
-                message = xhr.responseJSON.message;
-            }
-
-            $("#errorText").text(message);
-            $("#PredictionerrorMessage").fadeIn();
-        },
-    });
 });
 
 $(document).ready(function () {

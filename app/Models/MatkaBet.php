@@ -8,15 +8,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class MatkaBet extends Model
 {
     //
-    use SoftDeletes;
     protected $fillable = [
         'user_id',
         'market_id',
-        'bet_amount',
-        'transaction_id',
-        'bet_number',
         'number_type_id',
-        'user_upi',
+        'amount',
+        'number_id',
     ];
 
     public function user()
@@ -29,7 +26,12 @@ class MatkaBet extends Model
         return $this->belongsTo(Market::class);
     }
 
-    public function number_type(){
+    public function number_type()
+    {
         return $this->belongsTo(NumberType::class);
+    }
+
+    public function number(){
+        return $this->belongsTo(MatkaNumber::class, 'number_id');
     }
 }

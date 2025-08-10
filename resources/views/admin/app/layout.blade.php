@@ -59,7 +59,7 @@
     <script src="{{ asset('assets/dist/jquery.validate.min.js') }}"></script>
     <script src="{{ asset('assets/dist/blockui.js') }}"></script>
     <script src="{{ asset('assets/admin/js/common.js') }}"></script>
-    {{-- @stack('scripts')
+    @stack('scripts')
 </body>
 
 </html>
