@@ -17,6 +17,19 @@
                 </a>
             </li>
 
+            @php $isTransaction = Route::is('admin.transactions.*'); @endphp
+            <li class="nav-item nav-item-has-children">
+                <a href="#0" data-bs-toggle="collapse" data-bs-target="#transactions_nav" aria-controls="transactions_nav"
+                    aria-expanded="{{ $isTransaction ? 'true' : 'false' }}" aria-label="Toggle navigation">
+                    <span class="icon"><span class="mdi mdi-store"></span></span>
+                    <span class="text">Transactions</span>
+                </a>
+                <ul id="transactions_nav" class="dropdown-nav {{ $isTransaction ? 'show' : 'collapse' }}">
+                    <li><a href="{{ route('admin.transactions.index') }}"
+                            class="{{ $route === 'admin.transactions.index' ? 'active' : '' }}">Transactions</a></li>
+                </ul>
+            </li>
+
             {{-- Markets --}}
             @php $isMarket = Route::is('admin.market.*'); @endphp
             <li class="nav-item nav-item-has-children">
@@ -34,8 +47,9 @@
             </li>
             @php $isMarket = Route::is('admin.matka.bets*'); @endphp
             <li class="nav-item nav-item-has-children">
-                <a href="#0" data-bs-toggle="collapse" data-bs-target="#add_matka_bets" aria-controls="add_matka_bets"
-                    aria-expanded="{{ $isMarket ? 'true' : 'false' }}" aria-label="Toggle navigation">
+                <a href="#0" data-bs-toggle="collapse" data-bs-target="#add_matka_bets"
+                    aria-controls="add_matka_bets" aria-expanded="{{ $isMarket ? 'true' : 'false' }}"
+                    aria-label="Toggle navigation">
                     <span class="icon"><span class="mdi mdi-store"></span></span>
                     <span class="text">Add Matka Bets</span>
                 </a>

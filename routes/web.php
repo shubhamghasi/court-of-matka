@@ -19,6 +19,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MatkaBetsController;
 use App\Http\Controllers\PredictionController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TypeController;
 use App\Models\NumberAmount;
 use Illuminate\Support\Facades\Route;
@@ -50,6 +51,9 @@ Route::middleware(['auth', 'validated_email'])->group(function () {
     Route::post('/notifications/doubt/{id}/mark-as-read', [NotificationController::class, 'markDoubtAsRead'])
         ->name('notifications.doubt.markAsRead');
     Route::post('/market-bets/fetch', [MatkaBetsController::class, 'fetchBets']);
+    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
+    Route::get('/transactions/create', [TransactionController::class, 'create'])->name('transactions.create'); // optional
+    Route::post('/transactions', [TransactionController::class, 'store'])->name('transactions.store');
 });
 
 
@@ -93,6 +97,19 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     // Get numbers by number type (AJAX)
     Route::post('matka/bets/get-numbers', [MatkaBetController::class, 'getNumbers'])
         ->name('admin.matka.bets.getNumbers');
+    Route::post('payment/change-status/{id}', [TransactionController::class, 'changeStatus'])
+        ->name('admin.transactions.changeStatus');
+
+    Route::post('user/allow-user/{id}', [TransactionController::class, 'allowUser'])
+        ->name('admin.transactions.allowUser');
+
+
+    Route::get('transactions/search', [TransactionController::class, 'search'])
+        ->name('admin.transactions.search');
+    Route::get('transactions', [TransactionController::class, 'index'])->name('admin.transactions.index');
+
+    Route::patch('users/remove-trends-access', [UserController::class, 'removeTrendsAccess'])
+        ->name('admin.users.removeTrendsAccess');
 });
 
 Route::get('/notifications/data', [NotificationController::class, 'getNotifications'])->name('notifications.json');

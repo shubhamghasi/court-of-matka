@@ -51,6 +51,17 @@
                 @enderror
             </div>
 
+            {{-- Bet Date --}}
+            <div class="input-style-1 mt-3">
+                <label>Bet Date</label>
+                <input type="date" name="bet_date" value="{{ old('bet_date', date('Y-m-d')) }}"
+                    class="form-control @error('bet_date') is-invalid @enderror">
+                @error('bet_date')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+
             {{-- Panel Number Input (hidden by default) --}}
             <div id="panelNumberField" class="input-style-1 mt-3 {{ old('panel_number') ? '' : 'd-none' }}">
                 <label>Panel Number</label>

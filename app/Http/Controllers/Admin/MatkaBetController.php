@@ -53,8 +53,14 @@ class MatkaBetController extends Controller
             'number_type_id' => 'required|integer|exists:number_types,id',
             'bets' => 'required|array',
             'bets.*.number_id' => 'nullable|integer|exists:matka_numbers,id',
-            'bets.*.amount' => 'nullable|numeric|min:1'
+            'bets.*.amount' => 'nullable|numeric|min:1',
+            'bet_date' => 'nullable|date',
+
         ]);
+
+        $createdAt = $request->filled('bet_date')
+            ? \Carbon\Carbon::parse($request->bet_date)->format('Y-m-d H:i:s')
+            : now();
 
         // Keep only bets with an amount
         $filteredBets = collect($request->bets)->filter(function ($bet) {
@@ -65,14 +71,17 @@ class MatkaBetController extends Controller
         if ($filteredBets->count() === 0) {
             return back()->withErrors(['bets' => 'You must place at least one bet.'])->withInput();
         }
+
         // Store bets
         foreach ($filteredBets as $bet) {
             MatkaBet::create([
-                'user_id' => Auth::id(),
-                'market_id' => $request->market_id,
-                'number_type_id' => $request->number_type_id,
-                'number_id' => $bet['number_id'],
-                'amount' => $bet['amount'],
+                'user_id'         => Auth::id(),
+                'market_id'       => $request->market_id,
+                'number_type_id'  => $request->number_type_id,
+                'number_id'       => $bet['number_id'],
+                'amount'          => $bet['amount'],
+                'created_at' => $createdAt,
+                'updated_at' => now(),
             ]);
         }
 

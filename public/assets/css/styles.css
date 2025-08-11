@@ -1082,12 +1082,12 @@ video {
     font-weight: 500;
     margin: 0;
 } */
-.jodi-card {
+/* .jodi-card {
     background: linear-gradient(135deg, #6b7280 0%, #9ca3af 50%, #d1d5db 100%);
     transition: all 0.3s ease;
-}
+} */
 
-.jodi-card:nth-child(even) {
+/* .jodi-card:nth-child(even) {
     background: linear-gradient(135deg, #4b5563 0%, #6b7280 50%, #9ca3af 100%);
 }
 
@@ -1099,7 +1099,7 @@ video {
     transform: translateY(-4px);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
         0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
+} */
 
 .jodi-number {
     background: rgba(255, 255, 255, 0.2);
@@ -1110,6 +1110,18 @@ video {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.heighest_amount {
-    background: linear-gradient(135deg, #00ae2c 0%, #139325 50%, #6bc746 100%) !important;
+.bg-green-500 {
+    background-color: #22c55e !important; /* Tailwind green-500 */
+}
+
+.bg-yellow-500 {
+    background-color: #eab308 !important; /* Tailwind yellow-500 */
+}
+
+.bg-red-500 {
+    background-color: #ef4444 !important; /* Tailwind red-500 */
+}
+
+.bg-gray-800 {
+    background-color: #1f2937 !important; /* Tailwind gray-800 */
 }

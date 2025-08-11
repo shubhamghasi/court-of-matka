@@ -28,7 +28,8 @@ class User extends Authenticatable
         'agreed_terms',
         'remember_token',
         'role',
-        'phone'
+        'phone',
+        'has_trends_access'
     ];
 
     /**

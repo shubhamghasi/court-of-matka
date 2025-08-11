@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Market;
 use App\Models\MatkaBet;
+use App\Models\NumberType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -65,14 +66,28 @@ class MatkaBetsController extends Controller
             'panel_number'  => 'nullable|string'
         ]);
 
+        $user = $request->user();
+        $requestedDate = \Carbon\Carbon::parse($request->date)->toDateString();
+        $todayDate = now()->toDateString();
+
+        if ($requestedDate === $todayDate && !$user->has_trends_access) {
+            return response()->json([
+                'success' => false,
+                'requires_payment' => true,
+                'message' => 'You need to purchase access to view today\'s trends.'
+            ], 403);
+        }
+
+        $numberTypeName = NumberType::find($request->number_type)->name ?? '';
+        $panel_requested = stripos($numberTypeName, 'panel') !== false;
+
         $betsQuery = MatkaBet::select('number_id', DB::raw('SUM(amount) as total_amount'))
             ->with('number')
             ->where('market_id', $request->market)
             ->where('number_type_id', $request->number_type)
-            ->whereDate('created_at', $request->date);
+            ->whereDate('created_at', $requestedDate);
 
-        // If panel_number is provided, filter related number table
-        if (!empty($request->panel_number)) {
+        if (!$panel_requested && !empty($request->panel_number)) {
             $betsQuery->whereHas('number', function ($q) use ($request) {
                 $q->where('number', $request->panel_number);
             });
@@ -82,22 +97,63 @@ class MatkaBetsController extends Controller
             ->groupBy('number_id')
             ->get();
 
-        // Find highest total_amount
+        if ($bets->isEmpty()) {
+            return response()->json([
+                'success' => true,
+                'data'    => [],
+                'panel_requested' => $panel_requested
+            ]);
+        }
+
+        $bets->transform(function ($b) {
+            $b->total_amount = (float) $b->total_amount;
+            return $b;
+        });
+
         $maxAmount = $bets->max('total_amount');
 
-        // Add a flag to each bet
-        $bets = $bets->map(function ($bet) use ($maxAmount) {
-            $bet->is_highest = ($bet->total_amount == $maxAmount);
-            return $bet;
-        })
-            ->sortBy(function ($bet) {
+        if ($maxAmount <= 0) {
+            $bets = $bets->map(function ($bet) {
+                $bet->category = 'green';
+                return $bet;
+            })->sortBy(function ($bet) {
                 return $bet->number->panel_number ?? $bet->number->number;
-            })
-            ->values();
+            })->values();
+
+            return response()->json([
+                'success' => true,
+                'data'    => $bets,
+                'panel_requested' => $panel_requested
+            ]);
+        }
+
+        $t1 = $maxAmount / 3.0;
+        $t2 = 2 * $maxAmount / 3.0;
+        $t3 = $maxAmount;
+
+        $bets = $bets->map(function ($bet) use ($t1, $t2, $t3) {
+            $a = $bet->total_amount;
+            $d1 = abs($a - $t1);
+            $d2 = abs($a - $t2);
+            $d3 = abs($a - $t3);
+
+            if ($d1 <= $d2 && $d1 <= $d3) {
+                $bet->category = 'green';
+            } elseif ($d2 <= $d1 && $d2 <= $d3) {
+                $bet->category = 'yellow';
+            } else {
+                $bet->category = 'red';
+            }
+
+            return $bet;
+        })->sortBy(function ($bet) {
+            return $bet->number->panel_number ?? $bet->number->number;
+        })->values();
 
         return response()->json([
             'success' => true,
-            'data'    => $bets
+            'data'    => $bets,
+            'panel_requested' => $panel_requested
         ]);
     }
 }

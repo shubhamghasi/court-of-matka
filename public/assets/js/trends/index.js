@@ -30,43 +30,55 @@ $("#trendsForm").validate({
             },
             success: function (response) {
                 console.log("Bet Data:", response);
-
+                let panel_requested = response.panel_requested ?? false; // FIX HERE
                 let result_container = $("#result_container");
                 result_container.empty(); // clear old results
 
+                // If requires payment, show payment form and stop further execution
+                if (response.requires_payment) {
+                    $("#trends_payment_form").removeClass("hidden");
+                    result_container.html(
+                        `<div class="text-center text-red-500 font-semibold">${response.message}</div>`
+                    );
+                    return;
+                }
+
                 if (response.success && response.data.length > 0) {
-                    // Create a grid wrapper
                     let gridWrapper = $(
                         '<div class="mt-3 max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"></div>'
                     );
 
                     response.data.forEach(function (bet) {
-                        let number = bet.number
+                        let number = panel_requested
                             ? bet.number.panel_number
-                                ? bet.number.panel_number
-                                : bet.number.number
-                            : bet.number_id;
+                            : bet.number.number;
 
                         let totalAmount = Number(bet.total_amount) || 0;
 
-                        // If it's the highest bet, add green background
-                        let highestClass = bet.is_highest
-                            ? "heighest_amount"
-                            : "bg-gray-800";
+                        let categoryColor = "";
+                        switch (bet.category) {
+                            case "green":
+                                categoryColor = "bg-green-500";
+                                break;
+                            case "yellow":
+                                categoryColor = "bg-yellow-500";
+                                break;
+                            case "red":
+                                categoryColor = "bg-red-500";
+                                break;
+                            default:
+                                categoryColor = "bg-gray-800";
+                        }
 
                         let cardHtml = `
-        <div class="jodi jodi-card rounded-2xl p-6 text-white shadow-lg ${highestClass}">
-            <div class="flex flex-col items-center space-y-4">
-                <div class="jodi-number w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold bg-white text-black">
-                    ${number}
-                </div>
-                <div class="amount amount-text text-center">
-                    <div class="text-sm opacity-80 mb-1">Amount</div>
-                    <div class="text-xl sm:text-2xl font-bold">₹ ${totalAmount.toLocaleString()}</div>
-                </div>
-            </div>
-        </div>
-    `;
+                                        <div class="jodi jodi-card rounded-2xl p-6 text-white shadow-lg ${categoryColor}">
+                                            <div class="flex flex-col items-center space-y-4">
+                                                <div class="jodi-number w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold bg-white text-black">
+                                                    ${number}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
 
                         gridWrapper.append(cardHtml);
                     });
@@ -80,21 +92,72 @@ $("#trendsForm").validate({
             },
             error: function (xhr) {
                 console.error(xhr.responseText);
+                if (xhr.status === 403) {
+                    try {
+                        let res = JSON.parse(xhr.responseText);
+                        if (res.requires_payment) {
+                            $("#trends_payment_form").removeClass("hidden");
+                            $("#result_container").html(
+                                `<div class="text-center text-red-500 font-semibold">${res.message}</div>`
+                            );
+                        }
+                    } catch (e) {
+                        console.error("Error parsing JSON:", e);
+                    }
+                }
             },
         });
     },
 });
 
-// Show panel number field if "Panel" is selected
-$("#number_type").on("change", function () {
-    let selectedText = $("#number_type option:selected")
-        .text()
-        .trim()
-        .toLowerCase();
-    if (selectedText === "panel") {
-        $("#panel-number-field").removeClass("hidden");
-    } else {
-        $("#panel-number-field").addClass("hidden");
-        $("#panel_number").val(""); // clear if hidden
-    }
+$(document).ready(function () {
+    $("#trends_payment_form").on("submit", function (e) {
+        e.preventDefault(); // prevent normal form submission
+
+        let formData = $(this).serialize();
+
+        $.ajax({
+            url: $(this).attr("action"),
+            type: "POST",
+            data: formData,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"), // Laravel CSRF
+            },
+            beforeSend: function () {
+                // Optional: disable button & show loading
+                $("#trends_payment_form button[type=submit]")
+                    .prop("disabled", true)
+                    .text("Submitting...");
+            },
+            success: function (response) {
+                // Clear the form
+                $("#trends_payment_form")[0].reset();
+                $("#trends_payment_form").addClass("hidden");
+
+                // Show success message
+                $("#result_container").html(`
+                    <div class="bg-green-100 border border-green-300 text-green-800 rounded-lg p-4 text-center font-semibold">
+                        ✅ Payment submitted successfully! Please check after 30 minutes — we need to process and validate your payment.
+                    </div>
+                `);
+            },
+            error: function (xhr) {
+                let errMsg = "Something went wrong. Please try again.";
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errMsg = xhr.responseJSON.message;
+                }
+
+                $("#result_container").html(`
+                    <div class="bg-red-100 border border-red-300 text-red-800 rounded-lg p-4 text-center font-semibold">
+                        ❌ ${errMsg}
+                    </div>
+                `);
+            },
+            complete: function () {
+                $("#trends_payment_form button[type=submit]")
+                    .prop("disabled", false)
+                    .text("Submit Payment Details");
+            },
+        });
+    });
 });
