@@ -35,4 +35,8 @@ class MatkaBet extends Model
     public function number(){
         return $this->belongsTo(MatkaNumber::class, 'number_id');
     }
+
+    public function bet_number(){
+        return $this->belongsTo(MatkaNumber::class, 'number_id');
+    }
 }

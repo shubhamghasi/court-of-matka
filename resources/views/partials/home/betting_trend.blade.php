@@ -81,7 +81,7 @@
                         class="hidden space-y-6">
                         <!-- Random image above UPI ID -->
                         <div class="flex justify-center">
-                            <img src="https://picsum.photos/100" alt="Random"
+                            <img src="/img/scanner.jpg" alt="Random"
                                 class="w-48 h-48 object-cover rounded-md" />
                         </div>
 

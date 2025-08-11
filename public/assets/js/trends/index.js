@@ -112,7 +112,7 @@ $("#trendsForm").validate({
 
 $(document).ready(function () {
     $("#trends_payment_form").on("submit", function (e) {
-        e.preventDefault(); // prevent normal form submission
+        e.preventDefault();
 
         let formData = $(this).serialize();
 

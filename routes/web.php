@@ -40,7 +40,8 @@ Route::middleware('guest')->group(function () {
 Route::middleware(['auth', 'validated_email'])->group(function () {
     Route::post('/check-promo', [PromoController::class, 'check'])->name('promo.check');
     Route::get('/', [HomeController::class, 'index'])->name('home');
-    Route::post('send-matka-bet', [MatkaBetsController::class, 'handleMatkaBet'])->name('handleMatkaBet');
+     Route::post('/matka/play-bet/store', [MatkaBetController::class, 'store'])
+        ->name('handleMatkaBet');
     Route::match(['get', 'post'], 'prediction', [PredictionController::class, 'index'])->name('predict.store');
     Route::post('refunds/store', [RefundController::class, 'store'])->name('refund.store');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -54,6 +55,8 @@ Route::middleware(['auth', 'validated_email'])->group(function () {
     Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
     Route::get('/transactions/create', [TransactionController::class, 'create'])->name('transactions.create'); // optional
     Route::post('/transactions', [TransactionController::class, 'store'])->name('transactions.store');
+    Route::get('/matka/play/get-numbers', [MatkaBetController::class, 'getNumbers'])
+        ->name('matka.play.getNumbers');
 });
 
 

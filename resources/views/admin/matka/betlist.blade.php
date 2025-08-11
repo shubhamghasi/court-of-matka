@@ -31,12 +31,6 @@
                                 <h6 class="text-sm text-medium">Bet Amount</h6>
                             </th>
                             <th>
-                                <h6 class="text-sm text-medium">Transaction ID</h6>
-                            </th>
-                            <th>
-                                <h6 class="text-sm text-medium">User UPI</h6>
-                            </th>
-                            <th>
                                 <h6 class="text-sm text-medium text-center">Created at</h6>
                             </th>
                             {{-- <th class="min-width">
@@ -67,16 +61,21 @@
                                     <p class="text-sm">{{ ucfirst($bet->number_type?->name) }}</p>
                                 </td>
                                 <td>
-                                    <p class="text-sm">{{ $bet->bet_number }}</p>
+                                    @php
+                                        $numberTypeName = strtolower($bet->number_type?->name ?? '');
+                                    @endphp
+
+                                    @if (strpos($numberTypeName, 'panel') !== false)
+                                        <p class="text-sm">
+                                            {{ $bet->bet_number->panel_number }}
+                                            <span class="small">({{ $bet->bet_number->number }})</span>
+                                        </p>
+                                    @else
+                                        <p class="text-sm">{{ $bet->bet_number->number }}</p>
+                                    @endif
                                 </td>
                                 <td>
-                                    <p class="text-sm">{{ $bet->bet_amount }}</p>
-                                </td>
-                                <td>
-                                    <p class="text-sm">{{ $bet->transaction_id }}</p>
-                                </td>
-                                <td>
-                                    <p class="text-sm">{{ $bet->user_upi ?? 'N/A' }}</p>
+                                    <p class="text-sm">{{ $bet->amount }}</p>
                                 </td>
                                 <td>
                                     <p class="text-sm text-center">{{ $bet->created_at->format('d M, Y h:i A') }}</p>
@@ -85,8 +84,36 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div
+                    class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between mt-3 px-2">
+                    <div class="text-sm text-muted">
+                        Showing {{ $matBetsCollection->firstItem() }} to {{ $matBetsCollection->lastItem() }} of
+                        {{ $matBetsCollection->total() }} entries
+                    </div>
+                    <div>
+                        {{ $matBetsCollection->onEachSide(1)->links('vendor.pagination.bootstrap-5') }}
+                    </div>
+                </div>
                 <!-- End Table -->
             </div>
         </div>
     </div>
 @endsection
+
+@push('styles')
+    <style>
+        .pagination {
+            margin: 0;
+            padding: 0;
+        }
+
+        .page-item {
+            margin: 0 2px;
+        }
+
+        .page-link {
+            border-radius: 6px;
+            padding: 6px 12px;
+        }
+    </style>
+@endpush

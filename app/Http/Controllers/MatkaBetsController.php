@@ -53,7 +53,7 @@ class MatkaBetsController extends Controller
     {
         $matBetsCollection = MatkaBet::with(['user', 'market'])
             ->orderBy('created_at', 'desc')
-            ->paginate(20);
+            ->paginate(30);
         return view('admin.matka.betlist', compact(['matBetsCollection']));
     }
 

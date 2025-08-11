@@ -51,32 +51,32 @@ function showToast(type, message) {
     }, 4000);
 }
 
-$("#play_matka_form").on("submit", function (e) {
-    e.preventDefault();
+// $("#play_matka_form").on("submit", function (e) {
+//     e.preventDefault();
 
-    let form = $(this);
-    let formData = form.serialize();
+//     let form = $(this);
+//     let formData = form.serialize();
 
-    $.ajax({
-        url: "/send-matka-bet",
-        method: "POST",
-        data: formData,
-        success: function (response) {
-            console.log(response);
-            if (response.success) {
-                form[0].reset();
-                $("#successMessage").show();
-                showToast("success", response.message);
-            } else {
-                showToast("error", response.message);
-            }
-        },
-        error: function (xhr) {
-            console.error(xhr.responseText);
-            showToast("success", xhr.responseText);
-        },
-    });
-});
+//     $.ajax({
+//         url: "/send-matka-bet",
+//         method: "POST",
+//         data: formData,
+//         success: function (response) {
+//             console.log(response);
+//             if (response.success) {
+//                 form[0].reset();
+//                 $("#successMessage").show();
+//                 showToast("success", response.message);
+//             } else {
+//                 showToast("error", response.message);
+//             }
+//         },
+//         error: function (xhr) {
+//             console.error(xhr.responseText);
+//             showToast("success", xhr.responseText);
+//         },
+//     });
+// });
 
 $(document).ready(function () {
 
