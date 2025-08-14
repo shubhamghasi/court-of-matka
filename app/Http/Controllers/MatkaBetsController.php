@@ -70,6 +70,7 @@ class MatkaBetsController extends Controller
         $requestedDate = \Carbon\Carbon::parse($request->date)->toDateString();
         $todayDate = now()->toDateString();
 
+        // ✅ Restrict today's trends if user has no access
         if ($requestedDate === $todayDate && !$user->has_trends_access) {
             return response()->json([
                 'success' => false,
@@ -78,11 +79,14 @@ class MatkaBetsController extends Controller
             ], 403);
         }
 
+        // ✅ Detect if this is a panel request
         $numberTypeName = NumberType::find($request->number_type)->name ?? '';
         $panel_requested = stripos($numberTypeName, 'panel') !== false;
 
-        $betsQuery = MatkaBet::select('number_id', DB::raw('SUM(amount) as total_amount'))
+        // ✅ Fetch bets directly with stored color
+        $betsQuery = MatkaBet::select('number_id', 'color')
             ->with('number')
+            ->whereNotNull('color')
             ->where('market_id', $request->market)
             ->where('number_type_id', $request->number_type)
             ->whereDate('created_at', $requestedDate);
@@ -94,7 +98,7 @@ class MatkaBetsController extends Controller
         }
 
         $bets = $betsQuery
-            ->groupBy('number_id')
+            ->groupBy('number_id', 'color') // group by both number and color
             ->get();
 
         if ($bets->isEmpty()) {
@@ -105,46 +109,9 @@ class MatkaBetsController extends Controller
             ]);
         }
 
-        $bets->transform(function ($b) {
-            $b->total_amount = (float) $b->total_amount;
-            return $b;
-        });
-
-        $maxAmount = $bets->max('total_amount');
-
-        if ($maxAmount <= 0) {
-            $bets = $bets->map(function ($bet) {
-                $bet->category = 'green';
-                return $bet;
-            })->sortBy(function ($bet) {
-                return $bet->number->panel_number ?? $bet->number->number;
-            })->values();
-
-            return response()->json([
-                'success' => true,
-                'data'    => $bets,
-                'panel_requested' => $panel_requested
-            ]);
-        }
-
-        $t1 = $maxAmount / 3.0;
-        $t2 = 2 * $maxAmount / 3.0;
-        $t3 = $maxAmount;
-
-        $bets = $bets->map(function ($bet) use ($t1, $t2, $t3) {
-            $a = $bet->total_amount;
-            $d1 = abs($a - $t1);
-            $d2 = abs($a - $t2);
-            $d3 = abs($a - $t3);
-
-            if ($d1 <= $d2 && $d1 <= $d3) {
-                $bet->category = 'green';
-            } elseif ($d2 <= $d1 && $d2 <= $d3) {
-                $bet->category = 'yellow';
-            } else {
-                $bet->category = 'red';
-            }
-
+        // ✅ No amount logic, just pass color from DB
+        $bets = $bets->map(function ($bet) {
+            $bet->category = $bet->color ?? 'gray'; // fallback color
             return $bet;
         })->sortBy(function ($bet) {
             return $bet->number->panel_number ?? $bet->number->number;

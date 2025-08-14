@@ -29,7 +29,6 @@ $("#trendsForm").validate({
                 "X-CSRF-TOKEN": csrf_token,
             },
             success: function (response) {
-                console.log("Bet Data:", response);
                 let panel_requested = response.panel_requested ?? false; // FIX HERE
                 let result_container = $("#result_container");
                 result_container.empty(); // clear old results
@@ -55,20 +54,7 @@ $("#trendsForm").validate({
 
                         let totalAmount = Number(bet.total_amount) || 0;
 
-                        let categoryColor = "";
-                        switch (bet.category) {
-                            case "green":
-                                categoryColor = "bg-green-500";
-                                break;
-                            case "yellow":
-                                categoryColor = "bg-yellow-500";
-                                break;
-                            case "red":
-                                categoryColor = "bg-red-500";
-                                break;
-                            default:
-                                categoryColor = "bg-gray-800";
-                        }
+                        let categoryColor = bet.color ? `bg-${bet.color}-500` : "bg-gray-800";
 
                         let cardHtml = `
                                         <div class="jodi jodi-card rounded-2xl p-6 text-white shadow-lg ${categoryColor}">
@@ -91,7 +77,6 @@ $("#trendsForm").validate({
                 }
             },
             error: function (xhr) {
-                console.error(xhr.responseText);
                 if (xhr.status === 403) {
                     try {
                         let res = JSON.parse(xhr.responseText);

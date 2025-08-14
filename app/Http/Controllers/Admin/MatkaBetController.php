@@ -52,7 +52,6 @@ class MatkaBetController extends Controller
             'market_id'       => 'required|integer|exists:markets,id',
             'number_type_id'  => 'required|integer|exists:number_types,id',
             'bets'            => 'required|array|min:1',
-            'bets.*'          => 'integer|exists:matka_numbers,id',
             'bet_date'        => 'nullable|date',
         ]);
 
@@ -60,20 +59,42 @@ class MatkaBetController extends Controller
             ? \Carbon\Carbon::parse($request->bet_date)->format('Y-m-d H:i:s')
             : now();
 
-        // Make sure at least one number is selected
-        if (count($request->bets) === 0) {
-            return back()->withErrors(['bets' => 'Please select at least one number.'])->withInput();
+        // ✅ Check duplicate bet for today
+        $exists = MatkaBet::where('user_id', Auth::id())
+            ->where('market_id', $request->market_id)
+            ->where('number_type_id', $request->number_type_id)
+            ->whereDate('created_at', \Carbon\Carbon::parse($createdAt)->toDateString())
+            ->exists();
+
+        if ($exists) {
+            $errorMessage = 'You have already placed a bet in this category.';
+            if ($request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => $errorMessage], 422);
+            }
+            return back()->withErrors(['bets' => $errorMessage])->withInput();
         }
 
-        foreach ($request->bets as $numberId) {
+        // ✅ Store bets for both user & admin formats
+        foreach ($request->bets as $betData) {
+            $numberId = is_array($betData) ? ($betData['number_id'] ?? null) : $betData;
+            $color    = is_array($betData) ? ($betData['color'] ?? null) : null;
+
             MatkaBet::create([
                 'user_id'        => Auth::id(),
                 'market_id'      => $request->market_id,
                 'number_type_id' => $request->number_type_id,
                 'number_id'      => $numberId,
-                'amount'         => null,
+                'color'          => $color,
                 'created_at'     => $createdAt,
                 'updated_at'     => now(),
+            ]);
+        }
+
+        // ✅ Success response
+        if ($request->ajax()) {
+            return response()->json([
+                'status'  => 'success',
+                'message' => 'Numbers selected successfully.'
             ]);
         }
 

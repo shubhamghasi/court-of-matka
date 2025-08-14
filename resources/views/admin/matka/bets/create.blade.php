@@ -61,8 +61,7 @@
                 @enderror
             </div>
 
-
-            {{-- Panel Number Input (hidden by default) --}}
+            {{-- Panel Number Input --}}
             <div id="panelNumberField" class="input-style-1 mt-3 {{ old('panel_number') ? '' : 'd-none' }}">
                 <label>Panel Number</label>
                 <input type="text" id="panel_number" name="panel_number" value="{{ old('panel_number') }}"
@@ -74,7 +73,6 @@
 
             {{-- Numbers List --}}
             <div id="numbersList" class="mt-4">
-                {{-- If validation fails, repopulate bets --}}
                 @if (old('bets'))
                     <div class="row">
                         @foreach (old('bets') as $betId => $bet)
@@ -82,13 +80,7 @@
                                 <label>{{ $bet['number_label'] ?? '' }}</label>
                                 <input type="hidden" name="bets[{{ $betId }}][number_id]"
                                     value="{{ $bet['number_id'] }}">
-                                <input type="number"
-                                    class="form-control bet-amount @error("bets.$betId.amount") is-invalid @enderror"
-                                    name="bets[{{ $betId }}][amount]" value="{{ $bet['amount'] }}"
-                                    placeholder="Amount">
-                                @error("bets.$betId.amount")
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <input type="hidden" name="bets[{{ $betId }}][color]" value="{{ $bet['color'] }}">
                             </div>
                         @endforeach
                     </div>
@@ -111,7 +103,6 @@
             $("#number_type_id").change(function() {
                 let numberTypeId = $(this).val();
                 number_type = $(this).find("option:selected").text();
-                console.log(1);
                 if (!numberTypeId) return;
 
                 if (number_type.toLowerCase().includes("panel")) {
@@ -145,6 +136,21 @@
                     _token: "{{ csrf_token() }}"
                 },
                 success: function(numbers) {
+                    const colors = {
+                        red: {
+                            bg: "#F8D7DA",
+                            text: "#842029"
+                        },
+                        yellow: {
+                            bg: "#FFF3CD",
+                            text: "#664D03"
+                        },
+                        green: {
+                            bg: "#D4EDDA",
+                            text: "#0F5132"
+                        }
+                    };
+
                     let html = '<div class="row">';
                     numbers.forEach(function(num) {
                         let labelText = num.number;
@@ -153,10 +159,16 @@
                         }
 
                         html += `
-                        <div class="col-md-3 mb-2">
-                            <label>${labelText}</label>
+                        <div class="col-md-3 mb-2 text-center">
+                            <div class="number-box"
+                                data-number-id="${num.id}"
+                                data-color="red"
+                                style="padding:10px; border:2px solid #ccc; cursor:pointer;
+                                       background-color:${colors.red.bg}; color:${colors.red.text};">
+                                ${labelText}
+                            </div>
                             <input type="hidden" name="bets[${num.id}][number_id]" value="${num.id}">
-                            <input type="number" class="form-control bet-amount" name="bets[${num.id}][amount]" placeholder="Amount">
+                            <input type="hidden" name="bets[${num.id}][color]" class="color-input" value="red">
                         </div>
                     `;
                     });
@@ -164,35 +176,35 @@
 
                     html += `
                     <div class="row mt-4">
-                        <div class="col-md-3">
-                            <label>Min Value</label>
-                            <input type="number" id="minValue" class="form-control" placeholder="Min" min="0">
-                        </div>
-                        <div class="col-md-3">
-                            <label>Max Value</label>
-                            <input type="number" id="maxValue" class="form-control" placeholder="Max" min="0">
-                        </div>
                         <div class="col-md-3 d-flex align-items-end">
-                            <button type="button" id="fillRandom" class="btn btn-secondary w-100">Random Amount</button>
+                            <button type="button" id="randomColors" class="btn btn-secondary w-100">Random Color</button>
                         </div>
                     </div>
                 `;
 
                     $("#numbersList").html(html);
 
-                    // Random amount filler
-                    $("#fillRandom").off("click").on("click", function() {
-                        let min = parseInt($("#minValue").val()) || 0;
-                        let max = parseInt($("#maxValue").val()) || 0;
+                    $(".number-box").off("click").on("click", function() {
+                        let currentColor = $(this).attr("data-color");
+                        let nextColor = currentColor === "red" ? "yellow" :
+                            currentColor === "yellow" ? "green" : "red";
 
-                        if (min <= 0 || max <= 0 || min > max) {
-                            alert("Please enter valid Min and Max values.");
-                            return;
-                        }
+                        $(this).attr("data-color", nextColor)
+                            .css("background-color", colors[nextColor].bg)
+                            .css("color", colors[nextColor].text);
 
-                        $(".bet-amount").each(function() {
-                            let randomValue = Math.floor(Math.random() * (max - min + 1)) + min;
-                            $(this).val(randomValue);
+                        $(this).siblings(".color-input").val(nextColor);
+                    });
+
+                    $("#randomColors").off("click").on("click", function() {
+                        $(".number-box").each(function() {
+                            let currentColor = $(this).attr("data-color");
+                            if (currentColor === "green") return;
+                            let nextColor = Math.random() < 0.5 ? "red" : "yellow";
+                            $(this).attr("data-color", nextColor)
+                                .css("background-color", colors[nextColor].bg)
+                                .css("color", colors[nextColor].text);
+                            $(this).siblings(".color-input").val(nextColor);
                         });
                     });
                 }

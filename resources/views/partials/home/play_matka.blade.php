@@ -97,10 +97,10 @@
 
                 let form = $(this);
 
-                // Check if at least one checkbox is selected
+                // ✅ Require at least one checkbox checked
                 let hasValue = $(".bet-checkbox:checked").length > 0;
                 if (!hasValue) {
-                    alert("Please select at least one number before submitting.");
+                    showToast("error", "Please select at least one number before submitting.");
                     return;
                 }
 
@@ -116,18 +116,29 @@
                             "Submitting...");
                     },
                     success: function(response) {
+                        // ✅ Handle success
                         showToast("success", response.message || "Bet placed successfully");
-                        form.trigger("reset"); // clear the form
-                        $("#numbersList").html(""); // clear numbers list
+                        form.trigger("reset");
+                        $("#numbersList").html("");
                     },
                     error: function(xhr) {
+                        let message = "Something went wrong!";
+
                         if (xhr.status === 422) {
-                            let errors = xhr.responseJSON.errors;
-                            let errorMessages = Object.values(errors).flat().join("\n");
-                            showToast("error", errorMessages);
-                        } else {
-                            showToast("error", "Something went wrong!");
+                            let res = xhr.responseJSON;
+
+                            if (res.errors) {
+                                // Laravel default validation
+                                message = Object.values(res.errors).flat().join("\n");
+                            } else if (res.message) {
+                                // Our custom single message
+                                message = res.message;
+                            }
+                        } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                            message = xhr.responseJSON.message;
                         }
+
+                        showToast("error", message);
                     },
                     complete: function() {
                         form.find("button[type=submit]").prop("disabled", false).text(

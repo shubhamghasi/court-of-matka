@@ -12,7 +12,7 @@ class MatkaBet extends Model
         'user_id',
         'market_id',
         'number_type_id',
-        'amount',
+        'color',
         'number_id',
         'created_at'
     ];
