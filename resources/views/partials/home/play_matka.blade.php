@@ -54,7 +54,7 @@
                 <div class="flex justify-end mt-4">
                     <button type="submit"
                         class="gradient-bg text-white px-6 py-3 rounded-lg hover:opacity-90 transition">
-                        Submit Bet
+                        <i class="fa-solid fa-lock text-warning"></i> Lock Prediction
                     </button>
                 </div>
             </form>
@@ -91,23 +91,16 @@
                 }
             });
 
-            // ✅ Require at least one bet field filled
+            // ✅ Require at least one checkbox selected
             $("#play_matka_form").on("submit", function(e) {
                 e.preventDefault();
 
                 let form = $(this);
 
-                // Check if at least one bet amount is filled
-                let hasValue = false;
-                $(".bet-amount").each(function() {
-                    if ($(this).val().trim() !== "") {
-                        hasValue = true;
-                        return false; // break loop
-                    }
-                });
-
+                // Check if at least one checkbox is selected
+                let hasValue = $(".bet-checkbox:checked").length > 0;
                 if (!hasValue) {
-                    alert("Please fill at least one amount before submitting.");
+                    alert("Please select at least one number before submitting.");
                     return;
                 }
 
@@ -123,19 +116,17 @@
                             "Submitting...");
                     },
                     success: function(response) {
-                        // alert(response.message || "Bet placed successfully!");
                         showToast("success", response.message || "Bet placed successfully");
                         form.trigger("reset"); // clear the form
-                        // Optionally refresh numbers or UI
+                        $("#numbersList").html(""); // clear numbers list
                     },
                     error: function(xhr) {
                         if (xhr.status === 422) {
-                            // Laravel validation errors
                             let errors = xhr.responseJSON.errors;
                             let errorMessages = Object.values(errors).flat().join("\n");
                             showToast("error", errorMessages);
                         } else {
-                            showToast("Something went wrong!");
+                            showToast("error", "Something went wrong!");
                         }
                     },
                     complete: function() {
@@ -164,30 +155,17 @@
                         }
 
                         html += `
-                    <div>
-                        <label class="block text-sm">${labelText}</label>
-                        <input type="hidden" name="bets[${num.id}][number_id]" value="${num.id}">
-                        <input type="number" class="form-control bet-amount w-full border border-gray-300 rounded px-2 py-1" name="bets[${num.id}][amount]" placeholder="Amount">
+                    <div class="flex items-center gap-2">
+                        <input id="${num.type.name}_${num.id}" type="checkbox" 
+                            name="bets[]" 
+                            value="${num.id}" 
+                            class="bet-checkbox w-4 h-4">
+                        <label for="${num.type.name}_${num.id}" class="text-sm">${labelText}</label>
                     </div>
                 `;
                     });
                     html += '</div>';
                     $("#numbersList").html(html);
-
-                    $("#fillRandom").off("click").on("click", function() {
-                        let min = parseInt($("#minValue").val()) || 0;
-                        let max = parseInt($("#maxValue").val()) || 0;
-
-                        if (min <= 0 || max <= 0 || min > max) {
-                            alert("Please enter valid Min and Max values.");
-                            return;
-                        }
-
-                        $(".bet-amount").each(function() {
-                            let randomValue = Math.floor(Math.random() * (max - min + 1)) + min;
-                            $(this).val(randomValue);
-                        });
-                    });
                 }
             });
         }

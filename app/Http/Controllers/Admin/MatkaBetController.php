@@ -33,7 +33,7 @@ class MatkaBetController extends Controller
 
     public function getNumbers(Request $request)
     {
-        $query = MatkaNumber::where('number_type_id', $request->number_type_id);
+        $query = MatkaNumber::with('type')->where('number_type_id', $request->number_type_id);
 
         if ($request->filled('panel_number')) {
             $query->where('number', $request->panel_number);
@@ -49,43 +49,35 @@ class MatkaBetController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'market_id' => 'required|integer|exists:markets,id',
-            'number_type_id' => 'required|integer|exists:number_types,id',
-            'bets' => 'required|array',
-            'bets.*.number_id' => 'nullable|integer|exists:matka_numbers,id',
-            'bets.*.amount' => 'nullable|numeric|min:1',
-            'bet_date' => 'nullable|date',
-
+            'market_id'       => 'required|integer|exists:markets,id',
+            'number_type_id'  => 'required|integer|exists:number_types,id',
+            'bets'            => 'required|array|min:1',
+            'bets.*'          => 'integer|exists:matka_numbers,id',
+            'bet_date'        => 'nullable|date',
         ]);
 
         $createdAt = $request->filled('bet_date')
             ? \Carbon\Carbon::parse($request->bet_date)->format('Y-m-d H:i:s')
             : now();
 
-        // Keep only bets with an amount
-        $filteredBets = collect($request->bets)->filter(function ($bet) {
-            return !empty($bet['amount']) && !empty($bet['number_id']);
-        });
-
-        // Validation: must have at least 1 bet, max 2 bets
-        if ($filteredBets->count() === 0) {
-            return back()->withErrors(['bets' => 'You must place at least one bet.'])->withInput();
+        // Make sure at least one number is selected
+        if (count($request->bets) === 0) {
+            return back()->withErrors(['bets' => 'Please select at least one number.'])->withInput();
         }
 
-        // Store bets
-        foreach ($filteredBets as $bet) {
+        foreach ($request->bets as $numberId) {
             MatkaBet::create([
-                'user_id'         => Auth::id(),
-                'market_id'       => $request->market_id,
-                'number_type_id'  => $request->number_type_id,
-                'number_id'       => $bet['number_id'],
-                'amount'          => $bet['amount'],
-                'created_at' => $createdAt,
-                'updated_at' => now(),
+                'user_id'        => Auth::id(),
+                'market_id'      => $request->market_id,
+                'number_type_id' => $request->number_type_id,
+                'number_id'      => $numberId,
+                'amount'         => null,
+                'created_at'     => $createdAt,
+                'updated_at'     => now(),
             ]);
         }
 
-        return redirect()->back()->with('success', 'Bets added successfully.');
+        return redirect()->back()->with('success', 'Numbers selected successfully.');
     }
     /**
      * Display the specified resource.
