@@ -15,9 +15,17 @@ class MatkaBetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $bets = MatkaBet::with(['market', 'number_type'])
+            ->whereNotNull('color');
+        if ($request->filled('date')) {
+            $bets->whereDate('created_at', $request->date);
+        }
+        $bets = $bets->orderByDesc('created_at')
+            ->paginate(20);
+
+        return view('admin.matka.bets.index', compact('bets'));
     }
 
     /**
@@ -111,10 +119,37 @@ class MatkaBetController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, string $id)
     {
-        //
+        $bet = MatkaBet::with('market', 'number_type', 'number')->findOrFail($id);
+
+        // If GET request -> Show edit form
+        if ($request->isMethod('get')) {
+            $markets = Market::all();
+            $numberTypes = NumberType::all();
+            $numbers = MatkaNumber::all();
+
+            return view('admin.matka.bets.edit', compact('bet', 'markets', 'numberTypes', 'numbers'));
+        }
+
+        // If POST request -> Update bet
+        if ($request->isMethod('post')) {
+            $validated = $request->validate([
+                'color' => 'required|string|max:50',
+                'market_id' => 'required|integer|exists:markets,id',
+                'number_type_id' => 'required|integer|exists:number_types,id',
+                'number_id' => 'required|integer|exists:matka_numbers,id',
+            ]);
+
+            $bet->update($validated);
+
+            return redirect()->route('admin.matka.bets.index')
+                ->with('success', 'Bet updated successfully!');
+        }
+
+        abort(405, 'Method Not Allowed');
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -129,6 +164,11 @@ class MatkaBetController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $bet = MatkaBet::findOrFail($id);
+
+        $bet->delete();
+
+        return redirect()->route('admin.matka.bets.index')
+            ->with('success', 'Bet deleted successfully!');
     }
 }

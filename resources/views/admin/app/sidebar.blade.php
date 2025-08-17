@@ -19,8 +19,9 @@
 
             @php $isTransaction = Route::is('admin.transactions.*'); @endphp
             <li class="nav-item nav-item-has-children">
-                <a href="#0" data-bs-toggle="collapse" data-bs-target="#transactions_nav" aria-controls="transactions_nav"
-                    aria-expanded="{{ $isTransaction ? 'true' : 'false' }}" aria-label="Toggle navigation">
+                <a href="#0" data-bs-toggle="collapse" data-bs-target="#transactions_nav"
+                    aria-controls="transactions_nav" aria-expanded="{{ $isTransaction ? 'true' : 'false' }}"
+                    aria-label="Toggle navigation">
                     <span class="icon"><span class="mdi mdi-store"></span></span>
                     <span class="text">Transactions</span>
                 </a>
@@ -56,6 +57,8 @@
                 <ul id="add_matka_bets" class="dropdown-nav {{ $isMarket ? 'show' : 'collapse' }}">
                     <li><a href="{{ route('admin.matka.bets.create') }}"
                             class="{{ $route === 'admin.market.index' ? 'active' : '' }}">Add Matka Bets</a></li>
+                    <li><a href="{{ route('admin.matka.bets.index') }}"
+                            class="{{ $route === 'admin.market.index' ? 'active' : '' }}">Show Bets</a></li>
                 </ul>
             </li>
             {{-- Users --}}

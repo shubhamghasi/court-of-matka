@@ -40,7 +40,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware(['auth', 'validated_email'])->group(function () {
     Route::post('/check-promo', [PromoController::class, 'check'])->name('promo.check');
     Route::get('/', [HomeController::class, 'index'])->name('home');
-     Route::post('/matka/play-bet/store', [MatkaBetController::class, 'store'])
+    Route::post('/matka/play-bet/store', [MatkaBetController::class, 'store'])
         ->name('handleMatkaBet');
     Route::match(['get', 'post'], 'prediction', [PredictionController::class, 'index'])->name('predict.store');
     Route::post('refunds/store', [RefundController::class, 'store'])->name('refund.store');
@@ -96,6 +96,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     // Save the bets
     Route::post('matka/bets/store', [MatkaBetController::class, 'store'])
         ->name('admin.matka.bets.store');
+    Route::match(['get', 'post'], 'matka/bets/{id}/edit', [MatkaBetController::class, 'edit'])
+        ->name('admin.matka.bets.edit');
+    Route::get('matka/bets/index', [MatkaBetController::class, 'index'])
+        ->name('admin.matka.bets.index');
+    Route::delete('matka/bets/{id}', [MatkaBetController::class, 'destroy'])
+        ->name('admin.matka.bets.destroy');
 
     // Get numbers by number type (AJAX)
     Route::post('matka/bets/get-numbers', [MatkaBetController::class, 'getNumbers'])
