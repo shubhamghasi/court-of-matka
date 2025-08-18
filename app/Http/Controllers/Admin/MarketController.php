@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Market;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+use function Laravel\Prompts\error;
 
 class MarketController extends Controller
 {
@@ -14,7 +17,7 @@ class MarketController extends Controller
     public function index()
     {
         //
-        $marketsCollection = Market::where('status', 1)->get();
+        $marketsCollection = Market::whereNull('deleted_at')->get();
         return view('admin.market.index', compact('marketsCollection'));
     }
 
@@ -90,5 +93,31 @@ class MarketController extends Controller
             $market->delete();
             return redirect()->route('admin.market.index');
         }
+    }
+
+    public function setMarketsToInactive()
+    {
+        $userObj = Auth::user();
+
+        if (!$userObj || $userObj->role !== "admin") {
+            abort(403, 'Unauthorized action.');
+        }
+
+        Market::query()->update(['status' => "0"]);
+
+        return redirect()->route('admin.market.index')->with('success', 'All markets have been deactivated.');
+    }
+
+    public function setMarketsToActive()
+    {
+        $userObj = Auth::user();
+
+        if (!$userObj || $userObj->role !== "admin") {
+            abort(403, 'Unauthorized action.');
+        }
+
+        Market::query()->update(['status' => "1"]);
+
+        return redirect()->route('admin.market.index')->with('success', 'All markets have been activated.');
     }
 }

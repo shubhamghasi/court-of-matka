@@ -23,7 +23,7 @@
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg">
                             <option value="">Choose a market</option>
                             @foreach ($marketsCollection as $market)
-                                <option value="{{ $market->id }}">{{ $market->name }}</option>
+                                <option {{ empty($market->status) ? "disabled" : "" }} value="{{ $market->id }}">{{ $market->name }}</option>
                             @endforeach
                         </select>
                     </div>

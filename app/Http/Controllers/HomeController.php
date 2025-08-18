@@ -21,7 +21,7 @@ class HomeController extends Controller
         $user_id = Auth::user()->id;
         $now = Carbon::now()->format('H:i:s');
 
-        $marketsCollection = Market::where('status', 1)
+        $marketsCollection = Market::whereNull('deleted_at')
             ->where('start_time', '<=', $now)
             ->where('end_time', '>=', $now)
             ->get();

@@ -66,6 +66,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         return view('admin.index');
     })->name('admin.home');
     Route::resource('promo', PromoController::class)->except(['show'])->names('admin.promo');
+    Route::patch('market/inactive', [MarketController::class, 'setMarketsToInactive'])->name('admin.market.inactive');
+    Route::patch('market/active', [MarketController::class, 'setMarketsToActive'])->name('admin.market.active');
     Route::resource('market', MarketController::class)->names('admin.market');
     Route::get('matka-bet-list', [MatkaBetsController::class, 'getMatkaBetList'])->name('getMatkaBetList');
     Route::get('refund-requests', [RefundController::class, 'index'])->name('admin.refunds');
