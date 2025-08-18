@@ -54,7 +54,9 @@ $("#trendsForm").validate({
 
                         let totalAmount = Number(bet.total_amount) || 0;
 
-                        let categoryColor = bet.color ? `bg-${bet.color}-500` : "bg-gray-800";
+                        let categoryColor = bet.color
+                            ? `bg-${bet.color}-500`
+                            : "bg-gray-800";
 
                         let cardHtml = `
                                         <div class="jodi jodi-card rounded-2xl p-6 text-white shadow-lg ${categoryColor}">
@@ -95,6 +97,31 @@ $("#trendsForm").validate({
     },
 });
 
+function initNumberTypeHandler() {
+    const numberTypeSelect = $("#number_type");
+    const panelField = $("#panel-number-field");
+    const panelInput = $("#panel_number");
+
+    function togglePanelField() {
+        let selectedText = numberTypeSelect
+            .find("option:selected")
+            .text()
+            .toLowerCase();
+        if (selectedText.includes("panel")) {
+            panelField.removeClass("hidden");
+        } else {
+            panelField.addClass("hidden");
+            panelInput.val(""); // clear when hidden
+        }
+    }
+
+    // Bind change event
+    numberTypeSelect.on("change", togglePanelField);
+
+    // Run once on load
+    togglePanelField();
+}
+
 $(document).ready(function () {
     $("#trends_payment_form").on("submit", function (e) {
         e.preventDefault();
@@ -106,7 +133,7 @@ $(document).ready(function () {
             type: "POST",
             data: formData,
             headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"), // Laravel CSRF
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
             beforeSend: function () {
                 // Optional: disable button & show loading
@@ -145,4 +172,6 @@ $(document).ready(function () {
             },
         });
     });
+
+    initNumberTypeHandler();
 });

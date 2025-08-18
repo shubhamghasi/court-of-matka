@@ -81,9 +81,9 @@ class MatkaBetsController extends Controller
 
         // ✅ Detect if this is a panel request
         $numberTypeName = NumberType::find($request->number_type)->name ?? '';
-        $panel_requested = stripos($numberTypeName, 'panel') !== false;
+        $isPanelType = stripos($numberTypeName, 'panel') !== false;
 
-        // ✅ Fetch bets directly with stored color
+        // ✅ Base query
         $betsQuery = MatkaBet::select('number_id', 'color')
             ->with('number')
             ->whereNotNull('color')
@@ -91,21 +91,22 @@ class MatkaBetsController extends Controller
             ->where('number_type_id', $request->number_type)
             ->whereDate('created_at', $requestedDate);
 
-        if (!$panel_requested && !empty($request->panel_number)) {
+        // ✅ Apply panel number filter only if panel type AND panel_number is provided
+        if ($isPanelType && !empty($request->panel_number)) {
             $betsQuery->whereHas('number', function ($q) use ($request) {
                 $q->where('number', $request->panel_number);
             });
         }
 
         $bets = $betsQuery
-            ->groupBy('number_id', 'color') // group by both number and color
+            ->groupBy('number_id', 'color')
             ->get();
 
         if ($bets->isEmpty()) {
             return response()->json([
                 'success' => true,
                 'data'    => [],
-                'panel_requested' => $panel_requested
+                'panel_requested' => $isPanelType
             ]);
         }
 
@@ -114,13 +115,14 @@ class MatkaBetsController extends Controller
             $bet->category = $bet->color ?? 'gray'; // fallback color
             return $bet;
         })->sortBy(function ($bet) {
+            // Order by panel_number if exists, else by number
             return $bet->number->panel_number ?? $bet->number->number;
         })->values();
 
         return response()->json([
             'success' => true,
             'data'    => $bets,
-            'panel_requested' => $panel_requested
+            'panel_requested' => $isPanelType
         ]);
     }
 }

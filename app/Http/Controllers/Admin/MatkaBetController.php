@@ -67,8 +67,11 @@ class MatkaBetController extends Controller
             ? \Carbon\Carbon::parse($request->bet_date)->format('Y-m-d H:i:s')
             : now();
 
-        // ✅ Check duplicate bet for today
-        $exists = MatkaBet::where('user_id', Auth::id())
+        $exists = MatkaBet::with('user')
+            ->where('user_id', Auth::id())
+            ->whereHas('user', function ($q) {
+                $q->where('role', '!=', 'admin');
+            })
             ->where('market_id', $request->market_id)
             ->where('number_type_id', $request->number_type_id)
             ->whereDate('created_at', \Carbon\Carbon::parse($createdAt)->toDateString())
